@@ -1,5 +1,7 @@
 import gradio as gr
 import replicate
+import secret
+import os
 
 
 def api_call(
@@ -14,9 +16,11 @@ def api_call(
     guidance,
 ):
     # Prepare the API request
+    os.environ["REPLICATE_API_TOKEN"]
+
     api_request_payload = {
         "bpm": bpm,
-        "seed": seed,
+        "seed": int(seed),
         "top_k": 250,
         "top_p": 0,
         "prompt": prompt,
@@ -32,7 +36,7 @@ def api_call(
         "andreasjansson/musicgen-looper:f8140d0457c2b39ad8728a80736fea9a67a0ec0cd37b35f40b68cce507db2366",
         input=api_request_payload,
     )
-    return output
+    return print(output)
 
 
 with gr.Blocks() as demo:
