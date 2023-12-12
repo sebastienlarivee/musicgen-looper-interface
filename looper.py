@@ -1,5 +1,6 @@
 import os
 import random
+import string
 import subprocess
 import torch
 import numpy as np
@@ -30,6 +31,11 @@ def set_all_seeds(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
+
+
+def generate_random_string(length=5):
+    letters = string.ascii_lowercase + string.digits
+    return "".join(random.choice(letters) for i in range(length))
 
 
 def estimate_beats(wav, sample_rate, beatnet):
@@ -117,8 +123,6 @@ def main_predictor(params):
     output_format = params["output_format"]
     guidance = params["classifier_free_guidance"]
 
-    # model = medium_model if model_version == "medium" else large_model
-
     model.set_generation_params(
         duration=max_duration,
         top_k=top_k,
@@ -155,12 +159,15 @@ def main_predictor(params):
     # Process the audio loop for the main output
     stretched = pyrb.time_stretch(loop, model.sample_rate, bpm / actual_bpm)
 
+    # Generate a random string for this set of variations
+    random_string = generate_random_string()
+
     # Initialize outputs dictionary
     outputs = {}
 
     # Save the main output
     main_output_path = write(
-        stretched, model.sample_rate, output_format, "variation_01"
+        stretched, model.sample_rate, output_format, f"variation_01_{random_string}"
     )
     add_output(outputs, main_output_path)
 
@@ -216,7 +223,7 @@ def main_predictor(params):
                 variation_stretched,
                 model.sample_rate,
                 output_format,
-                f"variation_{i:02d}",
+                f"variation_{i:02d}_{random_string}",
             )
             add_output(outputs, variation_output_path)
 
