@@ -50,7 +50,7 @@ with gr.Blocks() as demo:
                     minimum=5, maximum=30, value=10, label="Max Duration"
                 )
                 variations_slider = gr.Slider(
-                    minimum=1, maximum=20, value=1, label="Variations"
+                    minimum=1, maximum=10, value=1, label="Variations"
                 )
             with gr.Row():
                 seed_input = gr.Textbox(value=-1, label="Seed")
