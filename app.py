@@ -41,35 +41,37 @@ def api_call(
 
 with gr.Blocks() as demo:
     with gr.Row():
-        prompt_input = gr.Textbox(label="Prompt")
+        with gr.Column():
+            prompt_input = gr.Textbox(label="Prompt")
 
-    with gr.Row():
-        bpm_slider = gr.Slider(minimum=50, maximum=250, value=100, label="BPM")
-        max_duration_slider = gr.Slider(
-            minimum=5, maximum=30, value=10, label="Max Duration"
-        )
-        variations_slider = gr.Slider(
-            minimum=1, maximum=10, value=1, label="Variations"
-        )
-    with gr.Row():
-        seed_input = gr.Textbox(value=-1, label="Seed")
-        temperature_slider = gr.Slider(
-            minimum=0, maximum=1, value=1, label="Temperature"
-        )
-        guidance_slider = gr.Slider(
-            minimum=0, maximum=15, value=3, label="Classifier Free Guidance"
-        )
+            with gr.Row():
+                bpm_slider = gr.Slider(minimum=50, maximum=250, value=100, label="BPM")
+                max_duration_slider = gr.Slider(
+                    minimum=5, maximum=30, value=10, label="Max Duration"
+                )
+                variations_slider = gr.Slider(
+                    minimum=1, maximum=20, value=1, label="Variations"
+                )
+            with gr.Row():
+                seed_input = gr.Textbox(value=-1, label="Seed")
+                temperature_slider = gr.Slider(
+                    minimum=0, maximum=1, value=1, label="Temperature"
+                )
+                guidance_slider = gr.Slider(
+                    minimum=0, maximum=15, value=3, label="Classifier Free Guidance"
+                )
 
-    with gr.Row():
-        output_format_toggle = gr.Radio(
-            choices=["wav", "mp3"], value="wav", label="Output Format"
-        )
-        model_version_toggle = gr.Radio(
-            choices=["medium", "large"], value="large", label="Model Version"
-        )
+            with gr.Row():
+                output_format_toggle = gr.Radio(
+                    choices=["wav", "mp3"], value="wav", label="Output Format"
+                )
+                model_version_toggle = gr.Radio(
+                    choices=["medium", "large"], value="large", label="Model Version"
+                )
 
-    submit_button = gr.Button("Submit")
-    output_label = gr.Label()
+            submit_button = gr.Button("Submit")
+        with gr.Column():
+            output_audio = gr.Audio(label="Generated Audio")
 
     submit_button.click(
         fn=api_call,
@@ -84,7 +86,7 @@ with gr.Blocks() as demo:
             output_format_toggle,
             guidance_slider,
         ],
-        outputs=output_label,
+        outputs=output_audio,
     )
 
 
