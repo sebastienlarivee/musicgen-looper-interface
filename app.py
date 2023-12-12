@@ -1,6 +1,40 @@
 import gradio as gr
 import requests
 
+
+def api_call(
+    bpm, seed, prompt, variations, temperature, model_version, output_format, guidance
+):
+    # Prepare the API request
+    api_request_payload = {
+        "bpm": bpm,
+        "seed": seed,
+        "top_k": 250,
+        "top_p": 0,
+        "prompt": prompt,
+        "variations": variations,
+        "temperature": temperature,
+        "max_duration": 10,
+        "model_version": model_version,
+        "output_format": output_format,
+        "classifier_free_guidance": guidance,
+    }
+
+    # Make the API call
+    response = requests.post(
+        "API_ENDPOINT",  # Replace with the actual API endpoint
+        json={"input": api_request_payload},
+    )
+
+    # Parse the response for audio file links
+    # audio_links = parse_response(response)  # Define the parse_response function as needed
+
+    # Download audio files
+    # download_audio_files(audio_links)  # Define the download_audio_files function as needed
+
+    return "Audio files downloaded successfully."
+
+
 with gr.Blocks() as demo:
     with gr.Row():
         bpm_slider = gr.Slider(minimum=50, maximum=250, label="BPM")
@@ -35,39 +69,6 @@ with gr.Blocks() as demo:
         ],
         outputs=output_label,
     )
-
-
-def api_call(
-    bpm, seed, prompt, variations, temperature, model_version, output_format, guidance
-):
-    # Prepare the API request
-    api_request_payload = {
-        "bpm": bpm,
-        "seed": seed,
-        "top_k": 250,
-        "top_p": 0,
-        "prompt": prompt,
-        "variations": variations,
-        "temperature": temperature,
-        "max_duration": 10,
-        "model_version": model_version,
-        "output_format": output_format,
-        "classifier_free_guidance": guidance,
-    }
-
-    # Make the API call
-    response = requests.post(
-        "API_ENDPOINT",  # Replace with the actual API endpoint
-        json={"input": api_request_payload},
-    )
-
-    # Parse the response for audio file links
-    # audio_links = parse_response(response)  # Define the parse_response function as needed
-
-    # Download audio files
-    # download_audio_files(audio_links)  # Define the download_audio_files function as needed
-
-    return "Audio files downloaded successfully."
 
 
 if __name__ == "__main__":
