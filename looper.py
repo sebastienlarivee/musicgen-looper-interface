@@ -1,6 +1,8 @@
 import os
 import random
+import uuid
 import string
+import gc
 import subprocess
 import torch
 import numpy as np
@@ -34,8 +36,9 @@ def set_all_seeds(seed):
 
 
 def generate_random_string(length=5):
-    letters = string.ascii_lowercase + string.digits
-    return "".join(random.choice(letters) for i in range(length))
+    print("generating random string")
+    random_str = str(uuid.uuid4()).replace("-", "")[:length]
+    return random_str
 
 
 def estimate_beats(wav, sample_rate, beatnet):
@@ -226,5 +229,8 @@ def main_predictor(params):
                 f"variation_{i:02d}_{random_string}",
             )
             add_output(outputs, variation_output_path)
+
+    torch.cuda.empty_cache()
+    gc.collect()
 
     return outputs
