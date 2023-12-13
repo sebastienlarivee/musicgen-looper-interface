@@ -2,7 +2,7 @@
 Gradio implementation of [Cog MusicGen Looper](https://github.com/andreasjansson/cog-musicgen-looper) by Andreas Jansson. Uses MusicGen to generate music samples then trims them into seemless loops, and can generate multiple self-consistent variations based on the first audio generated.
 
 # Run on Colab
-A simple colab notebook is provided [here](https://colab.research.google.com/drive/1cGaPjpETt0eBr1RPXhu3SvWoh1AaZN-I?usp=sharing) and should provide everything you get started.
+A simple colab notebook is provided [here](https://colab.research.google.com/drive/1cGaPjpETt0eBr1RPXhu3SvWoh1AaZN-I?usp=sharing) and should provide everything you need get started with the interface.
 
 # Licenses
 * All code in this repository is licensed under the Apache License 2.0 license.
