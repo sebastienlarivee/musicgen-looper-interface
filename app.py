@@ -40,6 +40,9 @@ def inference_call(
 
     output = main_predictor(params)
 
+    # To add later:
+    # if len(output) < variations:
+
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
     print(f"Output: {output}")

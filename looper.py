@@ -129,7 +129,7 @@ def main_predictor(params):
     guidance = params["classifier_free_guidance"]
     save_path = "/tmp/"  # Set like this for colab, will implement a more general solution with a settings tab
 
-    print(f"Generating with params: {model}, {variations} variations, prompt: {prompt}")
+    print(f"Generating: {model_version}, {variations} variation(s), prompt: {prompt}")
 
     model.set_generation_params(
         duration=max_duration,
@@ -144,9 +144,11 @@ def main_predictor(params):
     set_all_seeds(seed)
 
     prompt = prompt + f", {bpm} bpm"
+    print("Variation 01: generating...")
     wav = model.generate([prompt], progress=True).cpu().numpy()[0, 0]
     wav = wav / np.abs(wav).max()
 
+    print("Variation 01: estimating beats...")
     beats = estimate_beats(wav, model.sample_rate, beatnet)
     start_time, end_time = get_loop_points(beats)
     num_beats = len(beats[(beats[:, 0] >= start_time) & (beats[:, 0] < end_time)])
@@ -204,6 +206,7 @@ def main_predictor(params):
             cfg_coef=guidance,
         )
 
+        print("Variation {i:02d}: generating...")
         for i in range(2, variations + 1):
             continuation = model.generate_continuation(
                 prompt=audio_prompt,
@@ -215,6 +218,7 @@ def main_predictor(params):
                 0, 0, audio_prompt_duration : audio_prompt_duration + len(loop)
             ]
 
+            print("Variation {i:02d}: estimating beats...")
             # Process each variation loop
             num_lead = 100  # for blending to avoid clicks
             lead_start = start_sample - num_lead
@@ -239,4 +243,5 @@ def main_predictor(params):
     torch.cuda.empty_cache()
     gc.collect()
 
+    print(f"Inference outputs: {outputs}")
     return outputs
