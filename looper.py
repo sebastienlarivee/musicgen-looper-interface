@@ -1,7 +1,6 @@
 import os
 import random
 import uuid
-import string
 import gc
 import subprocess
 import torch
@@ -107,7 +106,7 @@ def main_predictor(params):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # Determine which model to load based on the 'model_version' parameter
     model_version = params["model_version"]
-    model_identifier = f"facebook/musicgen-{model_version}"  # Adjust this line to match your model naming scheme
+    model_identifier = f"facebook/musicgen-{model_version}"  # Matches audiocraft naming scheme, needs to be more robust
     model = load_model(model_identifier, device)
     beatnet = BeatNet(
         1, mode="offline", inference_model="DBN", plot=[], thread=False, device="cuda:0"
@@ -124,6 +123,7 @@ def main_predictor(params):
     model_version = params["model_version"]
     output_format = params["output_format"]
     guidance = params["classifier_free_guidance"]
+    save_path = "/tmp/"  # Set like this for colab, will implement a more general solution with a settings tab
 
     model.set_generation_params(
         duration=max_duration,
@@ -172,7 +172,7 @@ def main_predictor(params):
         stretched,
         model.sample_rate,
         output_format,
-        f"/tmp/variation_01_{random_string}",
+        f"{save_path}variation_01_{random_string}",
     )
     outputs.append(main_output_path)  # Append to list instead of dictionary
 
@@ -226,7 +226,7 @@ def main_predictor(params):
                 variation_stretched,
                 model.sample_rate,
                 output_format,
-                f"/tmp/variation_{i:02d}_{random_string}",
+                f"{save_path}variation_{i:02d}_{random_string}",
             )
         outputs.append(os.path.abspath(variation_output_path))  # Append to list
 

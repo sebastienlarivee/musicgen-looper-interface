@@ -1,9 +1,11 @@
 import gradio as gr
-import time
+
+# from looper import main_predictor
 
 max_audio_outputs = 10
 
 
+# Handles the rendering of variable audio outputs
 def variable_outputs(k):
     k = int(k)
     return [gr.Audio(visible=True)] * k + [gr.Audio(visible=False)] * (
@@ -22,8 +24,7 @@ def inference_call(
     output_format,
     guidance,
 ):
-    # Prepare the API request
-
+    # Inference parameters
     params = {
         "bpm": bpm,
         "seed": int(seed),
@@ -40,13 +41,13 @@ def inference_call(
 
     output = main_predictor(params)
 
-    # Parse the output dictionary to extract file locations
+    # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - variations)
-    # Return the list of file locations
 
     return padded_output
 
 
+# Gradio interface layout
 with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column():
