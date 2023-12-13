@@ -1,6 +1,6 @@
-pip install gradio
-pip install git+https://github.com/facebookresearch/audiocraft.git
-pip install git+https://github.com/CPJKU/madmom
-pip install BeatNet
-pip install pyaudio
-pip install pyrubberband==0.3.0
+gradio
+git+https://github.com/facebookresearch/audiocraft.git
+git+https://github.com/CPJKU/madmom
+BeatNet
+pyaudio
+pyrubberband==0.3.0
