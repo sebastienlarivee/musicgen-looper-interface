@@ -184,6 +184,7 @@ def main_predictor(params):
         f"{save_path}variation_01_{random_string}",
     )
     outputs.append(main_output_path)  # Append to list instead of dictionary
+    print(f"Outputs list: {outputs}")
 
     # Generate additional variations if requested
     if variations > 1:
@@ -239,7 +240,8 @@ def main_predictor(params):
                 output_format,
                 f"{save_path}variation_{i:02d}_{random_string}",
             )
-        outputs.append(variation_output_path)  # Append to list
+            outputs.append(variation_output_path)  # Append to list
+            print(f"Outputs list: {outputs}")
 
     torch.cuda.empty_cache()
     gc.collect()
