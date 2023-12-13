@@ -3,6 +3,7 @@ Gradio implementation of [Cog MusicGen Looper](https://github.com/andreasjansson
 
 # Run on Colab
 A simple colab notebook can be found [here](https://colab.research.google.com/drive/1cGaPjpETt0eBr1RPXhu3SvWoh1AaZN-I?usp=sharing) and should provide everything you need get started with the interface.
+![alt text](https://github.com/sebastienlarivee/musicgen-looper-interface/blob/main/interface%20screenshot.png)
 
 # Licenses
 * All code in this repository is licensed under the Apache License 2.0 license.
