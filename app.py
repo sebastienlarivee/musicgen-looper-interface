@@ -115,5 +115,5 @@ with gr.Blocks() as demo:
 
 
 if __name__ == "__main__":
-    print("Launching MusicGen Looper Gradio interface...")
+    print("Launching MusicGen Looper interface...")
     demo.launch(share=True)
