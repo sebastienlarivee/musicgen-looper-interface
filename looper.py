@@ -206,7 +206,7 @@ def main_predictor(params):
             cfg_coef=guidance,
         )
 
-        print("Variation {i:02d}: generating...")
+        print(f"Variation {i:02d}: generating...")
         for i in range(2, variations + 1):
             continuation = model.generate_continuation(
                 prompt=audio_prompt,
@@ -218,7 +218,7 @@ def main_predictor(params):
                 0, 0, audio_prompt_duration : audio_prompt_duration + len(loop)
             ]
 
-            print("Variation {i:02d}: estimating beats...")
+            print(f"Variation {i:02d}: estimating beats...")
             # Process each variation loop
             num_lead = 100  # for blending to avoid clicks
             lead_start = start_sample - num_lead
