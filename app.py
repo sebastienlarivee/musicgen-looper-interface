@@ -45,8 +45,9 @@ def inference_call(
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
-    print(f"Output: {output}")
-    print(f"Padded: {padded_output}")
+
+    # print(f"Output: {output}")
+    # print(f"Padded: {padded_output}")
 
     return padded_output
 

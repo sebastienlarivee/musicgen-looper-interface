@@ -1,3 +1,7 @@
+# This code is adapted from:
+# https://github.com/andreasjansson/cog-musicgen-looper
+# With modifications
+
 # You'll need to run this line for colab and stuff:
 # !apt-get install -y ffmpeg portaudio19-dev rubberband-cli
 
@@ -98,15 +102,6 @@ def load_model(model_id, device, model_version):
     return music_gen_model
 
 
-def add_output(outputs, path):
-    for i in range(1, 21):
-        field = f"variation_{i:02d}"
-        if field not in outputs:
-            outputs[field] = path
-            return
-    raise ValueError("Failed to add output")
-
-
 def main_predictor(params):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # Determine which model to load based on the 'model_version' parameter
@@ -184,7 +179,7 @@ def main_predictor(params):
         f"{save_path}variation_01_{random_string}",
     )
     outputs.append(main_output_path)  # Append to list instead of dictionary
-    print(f"Outputs list: {outputs}")
+    # print(f"Outputs list: {outputs}")
 
     # Generate additional variations if requested
     if variations > 1:
@@ -241,10 +236,10 @@ def main_predictor(params):
                 f"{save_path}variation_{i:02d}_{random_string}",
             )
             outputs.append(variation_output_path)  # Append to list
-            print(f"Outputs list: {outputs}")
+            # print(f"Outputs list: {outputs}")
 
     torch.cuda.empty_cache()
     gc.collect()
 
-    print(f"Inference outputs: {outputs}")
+    # print(f"Inference outputs: {outputs}")
     return outputs
