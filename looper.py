@@ -206,8 +206,8 @@ def main_predictor(params):
             cfg_coef=guidance,
         )
 
-        print(f"Variation {i:02d}: generating...")
         for i in range(2, variations + 1):
+            print(f"Variation {i:02d}: generating...")
             continuation = model.generate_continuation(
                 prompt=audio_prompt,
                 prompt_sample_rate=model.sample_rate,
