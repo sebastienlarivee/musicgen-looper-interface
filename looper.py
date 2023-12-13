@@ -146,7 +146,6 @@ def main_predictor(params):
     wav = model.generate([prompt], progress=True).cpu().numpy()[0, 0]
     wav = wav / np.abs(wav).max()
 
-    print("Variation 01: estimating beats...")
     beats = estimate_beats(wav, model.sample_rate, beatnet)
     start_time, end_time = get_loop_points(beats)
     num_beats = len(beats[(beats[:, 0] >= start_time) & (beats[:, 0] < end_time)])
@@ -217,7 +216,6 @@ def main_predictor(params):
                 0, 0, audio_prompt_duration : audio_prompt_duration + len(loop)
             ]
 
-            print(f"Variation {i:02d}: estimating beats...")
             # Process each variation loop
             num_lead = 100  # for blending to avoid clicks
             lead_start = start_sample - num_lead
