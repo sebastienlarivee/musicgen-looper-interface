@@ -1,10 +1,16 @@
 import gradio as gr
-import replicate
-import secret
-import os
+
+max_audio_outputs = 10
 
 
-def api_call(
+def variable_outputs(k):
+    k = int(k)
+    return [gr.Audio(visible=True)] * k + [gr.Audio(visible=False)] * (
+        max_audio_outputs - k
+    )
+
+
+def inference_call(
     bpm,
     seed,
     prompt,
@@ -16,9 +22,8 @@ def api_call(
     guidance,
 ):
     # Prepare the API request
-    os.environ["REPLICATE_API_TOKEN"]
 
-    api_request_payload = {
+    params = {
         "bpm": bpm,
         "seed": int(seed),
         "top_k": 250,
@@ -32,11 +37,13 @@ def api_call(
         "classifier_free_guidance": guidance,
     }
 
-    output = replicate.run(
-        "andreasjansson/musicgen-looper:f8140d0457c2b39ad8728a80736fea9a67a0ec0cd37b35f40b68cce507db2366",
-        input=api_request_payload,
-    )
-    return print(output)
+    output = main_predictor(params)
+    # Parse the output dictionary to extract file locations
+    file_locations = [output[key] for key in output]
+
+    # Return the list of file locations
+    print(file_locations)
+    return file_locations
 
 
 with gr.Blocks() as demo:
@@ -50,7 +57,11 @@ with gr.Blocks() as demo:
                     minimum=5, maximum=30, value=10, label="Max Duration"
                 )
                 variations_slider = gr.Slider(
-                    minimum=1, maximum=10, value=1, label="Variations"
+                    minimum=1,
+                    maximum=max_audio_outputs,
+                    value=1,
+                    step=1,
+                    label="Variations",
                 )
             with gr.Row():
                 seed_input = gr.Textbox(value=-1, label="Seed")
@@ -66,15 +77,20 @@ with gr.Blocks() as demo:
                     choices=["wav", "mp3"], value="wav", label="Output Format"
                 )
                 model_version_toggle = gr.Radio(
-                    choices=["medium", "large"], value="large", label="Model Version"
+                    choices=["medium", "large"], value="medium", label="Model Version"
                 )
 
             submit_button = gr.Button("Submit")
         with gr.Column():
-            output_audio = gr.Audio(label="Generated Audio")
+            audio_outputs = []
+            for i in range(max_audio_outputs):
+                a = gr.Audio()
+                audio_outputs.append(a)
+
+    variations_slider.change(variable_outputs, variations_slider, audio_outputs)
 
     submit_button.click(
-        fn=api_call,
+        fn=inference_call,
         inputs=[
             bpm_slider,
             seed_input,
@@ -86,9 +102,7 @@ with gr.Blocks() as demo:
             output_format_toggle,
             guidance_slider,
         ],
-        outputs=output_audio,
+        outputs=audio_outputs,
     )
 
-
-if __name__ == "__main__":
-    demo.launch()
+demo.launch(share=True)
