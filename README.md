@@ -7,5 +7,3 @@ A simple colab notebook is provided [here](https://colab.research.google.com/dri
 # Licenses
 * All code in this repository is licensed under the Apache License 2.0 license.
 * The code in the [Cog MusicGen Looper](https://github.com/andreasjansson/cog-musicgen-looper) repository is released under the Apache License 2.0 as found in the [LICENSE file](https://github.com/andreasjansson/cog-musicgen-looper/blob/main/LICENSE).
-* The code in the [Audiocraft](https://github.com/facebookresearch/audiocraft) repository is released under the MIT license as found in the [LICENSE file](https://github.com/facebookresearch/audiocraft/blob/main/LICENSE).
-* The weights in the [Audiocraft](https://github.com/facebookresearch/audiocraft) repository are released under the CC-BY-NC 4.0 license as found in the [LICENSE_weights file](https://github.com/facebookresearch/audiocraft/blob/main/LICENSE_weights).
