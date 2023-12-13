@@ -129,6 +129,8 @@ def main_predictor(params):
     guidance = params["classifier_free_guidance"]
     save_path = "/tmp/"  # Set like this for colab, will implement a more general solution with a settings tab
 
+    print(f"Generating with params: {model}, {variations} variations, prompt: {prompt}")
+
     model.set_generation_params(
         duration=max_duration,
         top_k=top_k,
