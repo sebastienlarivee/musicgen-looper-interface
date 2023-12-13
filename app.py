@@ -1,6 +1,5 @@
 import gradio as gr
-
-# from looper import main_predictor
+from looper import main_predictor
 
 max_audio_outputs = 10
 
@@ -56,7 +55,7 @@ with gr.Blocks() as demo:
             with gr.Row():
                 bpm_slider = gr.Slider(minimum=50, maximum=250, value=100, label="BPM")
                 max_duration_slider = gr.Slider(
-                    minimum=5, maximum=30, value=10, label="Max Duration"
+                    minimum=5, maximum=30, value=10, step=1, label="Max Duration"
                 )
                 variations_slider = gr.Slider(
                     minimum=1,
@@ -79,7 +78,9 @@ with gr.Blocks() as demo:
                     choices=["wav", "mp3"], value="wav", label="Output Format"
                 )
                 model_version_toggle = gr.Radio(
-                    choices=["medium", "large"], value="medium", label="Model Version"
+                    choices=["medium", "large", "stereo-medium", "stereo-large"],
+                    value="medium",
+                    label="Model Version",
                 )
 
             submit_button = gr.Button("Submit")
