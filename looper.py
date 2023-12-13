@@ -81,19 +81,20 @@ def write(audio, sample_rate, output_format, name):
 loaded_models = {}
 
 
-def load_model(model_id, device):
+def load_model(model_id, device, model_version):
     # Check if the model is already loaded
     if model_id in loaded_models:
         return loaded_models[model_id]
 
     # Load the model since it's not loaded yet
+    print{f"Loading model: {model_version}..."}
     compression_model = load_compression_model(model_id, device=device)
     lm = load_lm_model(model_id, device=device)
     music_gen_model = MusicGen(model_id, compression_model, lm)
 
     # Store the loaded model in the dictionary
     loaded_models[model_id] = music_gen_model
-
+    print{f"Model loaded!"}
     return music_gen_model
 
 
@@ -111,7 +112,7 @@ def main_predictor(params):
     # Determine which model to load based on the 'model_version' parameter
     model_version = params["model_version"]
     model_identifier = f"facebook/musicgen-{model_version}"  # Matches audiocraft naming scheme, needs to be more robust
-    model = load_model(model_identifier, device)
+    model = load_model(model_identifier, device, model_version)
     beatnet = BeatNet(
         1, mode="offline", inference_model="DBN", plot=[], thread=False, device="cuda:0"
     )
