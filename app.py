@@ -108,4 +108,6 @@ with gr.Blocks() as demo:
         outputs=audio_outputs,
     )
 
-demo.launch()
+
+if __name__ == "__main__":
+    demo.launch(share=True)
