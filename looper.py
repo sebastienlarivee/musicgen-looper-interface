@@ -87,14 +87,14 @@ def load_model(model_id, device, model_version):
         return loaded_models[model_id]
 
     # Load the model since it's not loaded yet
-    print{f"Loading model: {model_version}..."}
+    print(f"Loading model: {model_version}...")
     compression_model = load_compression_model(model_id, device=device)
     lm = load_lm_model(model_id, device=device)
     music_gen_model = MusicGen(model_id, compression_model, lm)
 
     # Store the loaded model in the dictionary
     loaded_models[model_id] = music_gen_model
-    print{f"Model loaded!"}
+    print(f"Model loaded!")
     return music_gen_model
 
 
@@ -239,7 +239,7 @@ def main_predictor(params):
                 output_format,
                 f"{save_path}variation_{i:02d}_{random_string}",
             )
-        outputs.append(os.path.abspath(variation_output_path))  # Append to list
+        outputs.append(variation_output_path)  # Append to list
 
     torch.cuda.empty_cache()
     gc.collect()
