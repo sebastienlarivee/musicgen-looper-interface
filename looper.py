@@ -36,7 +36,6 @@ def set_all_seeds(seed):
 
 
 def generate_random_string(length=5):
-    print("generating random string")
     random_str = str(uuid.uuid4()).replace("-", "")[:length]
     return random_str
 
@@ -165,14 +164,17 @@ def main_predictor(params):
     # Generate a random string for this set of variations
     random_string = generate_random_string()
 
-    # Initialize outputs dictionary
-    outputs = {}
+    # Initialize outputs list
+    outputs = []
 
     # Save the main output
     main_output_path = write(
-        stretched, model.sample_rate, output_format, f"variation_01_{random_string}"
+        stretched,
+        model.sample_rate,
+        output_format,
+        f"/tmp/variation_01_{random_string}",
     )
-    add_output(outputs, main_output_path)
+    outputs.append(main_output_path)  # Append to list instead of dictionary
 
     # Generate additional variations if requested
     if variations > 1:
@@ -197,8 +199,6 @@ def main_predictor(params):
         )
 
         for i in range(2, variations + 1):
-            print(f"\nGenerating variation {i}")
-
             continuation = model.generate_continuation(
                 prompt=audio_prompt,
                 prompt_sample_rate=model.sample_rate,
@@ -226,9 +226,9 @@ def main_predictor(params):
                 variation_stretched,
                 model.sample_rate,
                 output_format,
-                f"variation_{i:02d}_{random_string}",
+                f"/tmp/variation_{i:02d}_{random_string}",
             )
-            add_output(outputs, variation_output_path)
+        outputs.append(os.path.abspath(variation_output_path))  # Append to list
 
     torch.cuda.empty_cache()
     gc.collect()

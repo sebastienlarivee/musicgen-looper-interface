@@ -1,4 +1,5 @@
 import gradio as gr
+import time
 
 max_audio_outputs = 10
 
@@ -38,18 +39,18 @@ def inference_call(
     }
 
     output = main_predictor(params)
-    # Parse the output dictionary to extract file locations
-    file_locations = [output[key] for key in output]
 
+    # Parse the output dictionary to extract file locations
+    padded_output = output + [None] * (max_audio_outputs - variations)
     # Return the list of file locations
-    print(file_locations)
-    return file_locations
+
+    return padded_output
 
 
 with gr.Blocks() as demo:
     with gr.Row():
         with gr.Column():
-            prompt_input = gr.Textbox(label="Prompt")
+            prompt_input = gr.Textbox(label="Prompt", value="chill lofi beat")
 
             with gr.Row():
                 bpm_slider = gr.Slider(minimum=50, maximum=250, value=100, label="BPM")
@@ -105,4 +106,4 @@ with gr.Blocks() as demo:
         outputs=audio_outputs,
     )
 
-demo.launch(share=True)
+demo.launch()
