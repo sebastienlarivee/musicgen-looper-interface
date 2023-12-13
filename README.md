@@ -1,2 +1,2 @@
-# gradio-looper-2
+# musicgen-looper-interface
  Simple Gradio interface for musicgen looper.
