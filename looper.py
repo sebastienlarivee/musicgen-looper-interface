@@ -1,5 +1,5 @@
 # This code is adapted from:
-# https://github.com/andreasjansson/cog-musicgen-looper
+# https://github.com/andreasjansson/cog-musicgen-looper by Andreas Jansson (Apache 2.0 license)
 # With modifications
 
 # You'll need to run this line for colab and stuff:
@@ -125,7 +125,9 @@ def main_predictor(params):
     guidance = params["classifier_free_guidance"]
     save_path = "/tmp/"  # Set like this for colab, will implement a more general solution with a settings tab
 
-    print(f"Generating: {model_version}, {variations} variation(s), prompt: {prompt}")
+    print(
+        f"Generating: {model_version}, {variations} variation(s), prompt: {prompt}, seed: {seed}"
+    )
 
     model.set_generation_params(
         duration=max_duration,
