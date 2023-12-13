@@ -1,3 +1,7 @@
+# You'll need to run this line for colab and stuff:
+# !apt-get install -y ffmpeg portaudio19-dev rubberband-cli
+
+
 import os
 import random
 import uuid
