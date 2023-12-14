@@ -1,7 +1,8 @@
 import gradio as gr
 import globals as glo
+import uuid
 
-from looper import main_predictor
+# from looper import main_predictor
 from generate import Generate
 
 
@@ -15,6 +16,11 @@ def variable_outputs(k):
     return [gr.Audio(visible=True)] * k + [gr.Audio(visible=False)] * (
         max_audio_outputs - k
     )
+
+
+def generate_random_string(length=5):
+    random_str = str(uuid.uuid4()).replace("-", "")[:length]
+    return random_str
 
 
 # Can reuse this inference call component to send calls to multiple different types of calls!
@@ -50,10 +56,12 @@ def inference_call(
     )
 
     output = []
+    random_string = generate_random_string()
     predict = Generate(bpm=bpm, seed=seed, prompt=prompt, output_format=output_format)
 
-    for _ in range(variations):
-        output.append(predict.simple_predict())
+    for i in range(variations):
+        name = f"variation_{i:02d}_{random_string}"
+        output.append(predict.simple_predict(name=name))
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))

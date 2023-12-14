@@ -86,9 +86,9 @@ class Generate:
             path = wav_path
         return path
 
-    def simple_predict(self):
+    def simple_predict(self, name):
         wav = self.predict_from_text()
-        output_path = self.write(audio=wav, name="simple_test")
+        output_path = self.write(audio=wav, name=name)
         return output_path
 
     def main_predictor(self):
@@ -117,14 +117,3 @@ class Generate:
 
         # Process the audio loop for the main output
         stretched = pyrb.time_stretch(loop, self.sample_rate, self.bpm / actual_bpm)
-
-        # Generate a random string for this set of variations
-        random_string = generate_random_string()
-
-        # Save the main output
-        main_output_path = write(
-            stretched,
-            f"variation_01_{random_string}",
-        )
-        outputs.append(main_output_path)  # Append to list instead of dictionary
-        # print(f"Outputs list: {outputs}")
