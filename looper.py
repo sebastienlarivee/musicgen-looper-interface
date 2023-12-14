@@ -7,6 +7,7 @@
 
 
 import os
+import datetime
 import random
 import uuid
 import gc
@@ -28,6 +29,7 @@ import madmom.audio.filters
 madmom.audio.filters.np.float = float
 
 loaded_models = {}
+output_folder_name = "Outputs"
 
 
 def set_all_seeds(seed):
@@ -79,16 +81,30 @@ def write(audio, sample_rate, output_format, name):
     return path
 
 
-def create_folder(path):
-    newpath = path
-    try:
-        if not os.path.exists(path):
-            os.makedirs(path)
-            print(f"Folder created at: {path}")
-        else:
-            print(f"Folder already exists at: {path}")
-    except Exception as e:
-        print(f"Error creating folder: {e}")
+def create_output_folders(base_path):
+    # Ensure base_path ends with a slash
+    if not base_path.endswith(os.sep):
+        base_path += os.sep
+
+    # Path for the 'Outputs' folder
+    outputs_path = base_path + output_folder_name
+
+    # Check if 'Outputs' folder exists, if not create it
+    if not os.path.exists(outputs_path):
+        os.makedirs(outputs_path)
+
+    # Get current date in yyyy-mm-dd format
+    current_date = datetime.date.today().isoformat()
+
+    # Path for the date folder inside 'Outputs'
+    date_folder_path = os.path.join(outputs_path, current_date)
+
+    # Check if date folder exists, if not create it
+    if not os.path.exists(date_folder_path):
+        os.makedirs(date_folder_path)
+
+    # Return the path to the date folder
+    return date_folder_path
 
 
 def load_fb_model(model_id, device):
@@ -153,7 +169,7 @@ def main_predictor(params):
     guidance = params["classifier_free_guidance"]
     base_save_path = params["save_path"]
 
-    save_path = create_folder(base_save_path)
+    save_path = create_output_folders(base_save_path)
 
     model.set_generation_params(
         duration=max_duration,
