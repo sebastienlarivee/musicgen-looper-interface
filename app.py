@@ -50,29 +50,12 @@ def inference_call(
         cfg_coef=guidance,
     )
 
-    # Inference parameters
-    params = {
-        "bpm": bpm,
-        "seed": int(seed),
-        "top_k": 250,
-        "top_p": 0,
-        "prompt": prompt,
-        "variations": variations,
-        "temperature": temperature,
-        "max_duration": max_duration,
-        "model_version": model_version,
-        "output_format": output_format,
-        "classifier_free_guidance": guidance,
-        "custom_model_path": custom_model_path,
-        "save_path": save_path,
-    }
-
-    output = main_predictor(params)
+    output = 
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
 
-    # print(f"Output: {output}")
+    print(f"Output: {output}")
     # print(f"Padded: {padded_output}")
 
     return padded_output
