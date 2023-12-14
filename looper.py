@@ -86,24 +86,18 @@ def create_output_folders(base_path):
     if not base_path.endswith(os.sep):
         base_path += os.sep
 
-    # Path for the 'Outputs' folder
+    # Create 'Outputs' folder
     outputs_path = base_path + output_folder_name
-
-    # Check if 'Outputs' folder exists, if not create it
     if not os.path.exists(outputs_path):
         os.makedirs(outputs_path)
 
-    # Get current date in yyyy-mm-dd format
+    # Create yyyy-mm-dd folder
     current_date = datetime.date.today().isoformat()
-
-    # Path for the date folder inside 'Outputs'
     date_folder_path = os.path.join(outputs_path, current_date)
-
-    # Check if date folder exists, if not create it
     if not os.path.exists(date_folder_path):
         os.makedirs(date_folder_path)
 
-    # Return the path to the date folder
+    # Return the path to the folder
     return date_folder_path
 
 
