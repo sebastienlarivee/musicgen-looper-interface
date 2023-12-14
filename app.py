@@ -23,6 +23,7 @@ def inference_call(
     output_format,
     guidance,
     custom_model_path,
+    save_path,
 ):
     # Inference parameters
     params = {
@@ -38,6 +39,7 @@ def inference_call(
         "output_format": output_format,
         "classifier_free_guidance": guidance,
         "custom_model_path": custom_model_path,
+        "save_path": save_path,
     }
 
     output = main_predictor(params)
@@ -96,27 +98,30 @@ with gr.Blocks() as demo:
         variations_slider.change(variable_outputs, variations_slider, audio_outputs)
     with gr.Tab("Settings"):
         with gr.Column():
-            output_format_toggle = gr.Radio(
-                choices=["wav", "mp3"], value="wav", label="Output Format"
-            )
+            with gr.Row():
+                model_version_toggle = gr.Radio(
+                    choices=[
+                        "small",
+                        "medium",
+                        "large",
+                        "stereo-small",
+                        "stereo-medium",
+                        "stereo-large",
+                        "custom model",
+                    ],
+                    value="small",
+                    label="Model Version",
+                )
+                custom_model_path = gr.Textbox(
+                    label="Custom Model Path",
+                    placeholder="File path to your model",
+                )
         with gr.Column():
-            model_version_toggle = gr.Radio(
-                choices=[
-                    "small",
-                    "medium",
-                    "large",
-                    "stereo-small",
-                    "stereo-medium",
-                    "stereo-large",
-                    "custom model",
-                ],
-                value="small",
-                label="Model Version",
-            )
-            custom_model_path = gr.Textbox(
-                label="Custom Model Path",
-                placeholder="File path to your model",
-            )
+            with gr.Row():
+                save_path_input = gr.Textbox(value="/tmp/", label="Save Path")
+                output_format_toggle = gr.Radio(
+                    choices=["wav", "mp3"], value="wav", label="Output Format"
+                )
 
     submit_button.click(
         fn=inference_call,
@@ -131,6 +136,7 @@ with gr.Blocks() as demo:
             output_format_toggle,
             guidance_slider,
             custom_model_path,
+            save_path_input,
         ],
         outputs=audio_outputs,
     )

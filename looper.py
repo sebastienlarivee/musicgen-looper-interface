@@ -145,8 +145,7 @@ def main_predictor(params):
     model_version = params["model_version"]
     output_format = params["output_format"]
     guidance = params["classifier_free_guidance"]
-
-    save_path = "/tmp/"  # Set like this for colab, will implement a more general solution with a settings tab
+    save_path = params["save_path"]
 
     print(
         f"Generating: {model_version}, {variations} variation(s), prompt: {prompt}, seed: {seed}"
