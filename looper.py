@@ -94,6 +94,7 @@ def create_output_folders(base_path):
     # Create yyyy-mm-dd folder
     current_date = datetime.date.today().isoformat()
     date_folder_path = os.path.join(outputs_path, current_date)
+    date_folder_path += os.sep
     if not os.path.exists(date_folder_path):
         os.makedirs(date_folder_path)
 
@@ -273,7 +274,7 @@ def main_predictor(params):
                 variation_stretched,
                 model.sample_rate,
                 output_format,
-                f"/{save_path}variation_{i:02d}_{random_string}",
+                f"{save_path}variation_{i:02d}_{random_string}",
             )
             outputs.append(variation_output_path)  # Append to list
             # print(f"Outputs list: {outputs}")
