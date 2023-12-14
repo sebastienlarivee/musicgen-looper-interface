@@ -1,5 +1,4 @@
 import gradio as gr
-import os
 import globals as glo
 
 from looper import main_predictor
