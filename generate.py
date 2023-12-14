@@ -93,7 +93,7 @@ class Generate:
     def simple_predict(self, name):
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
-        self.seed += 1
+        # self.seed += 1
         return output_path
 
     def main_predictor(self):
