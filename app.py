@@ -118,7 +118,9 @@ with gr.Blocks() as demo:
                 )
         with gr.Column():
             with gr.Row():
-                save_path_input = gr.Textbox(value="/tmp/", label="Save Path")
+                save_path_input = gr.Textbox(
+                    value="/content/musicgen-looper-interface", label="Save Path"
+                )
                 output_format_toggle = gr.Radio(
                     choices=["wav", "mp3"], value="wav", label="Output Format"
                 )
