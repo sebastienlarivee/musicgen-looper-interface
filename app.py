@@ -60,7 +60,7 @@ def inference_call(
     predict = Generate(bpm=bpm, seed=seed, prompt=prompt, output_format=output_format)
 
     for i in range(variations):
-        name = f"variation_{i:02d}_{random_string}"
+        name = f"{random_string}_variation_{i:02d}"
         output.append(predict.simple_predict(name=name))
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
