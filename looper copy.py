@@ -81,27 +81,6 @@ def write(audio, sample_rate, output_format, name):
     return path
 
 
-def create_output_folders(base_path):
-    # Ensure base_path ends with a slash
-    if not base_path.endswith(os.sep):
-        base_path += os.sep
-
-    # Create 'Outputs' folder
-    outputs_path = base_path + output_folder_name
-    if not os.path.exists(outputs_path):
-        os.makedirs(outputs_path)
-
-    # Create yyyy-mm-dd folder
-    current_date = datetime.date.today().isoformat()
-    date_folder_path = os.path.join(outputs_path, current_date)
-    date_folder_path += os.sep
-    if not os.path.exists(date_folder_path):
-        os.makedirs(date_folder_path)
-
-    # Return the path to the folder
-    return date_folder_path
-
-
 def load_fb_model(model_id, device):
     # Check if the model is already loaded
     if model_id in loaded_models:

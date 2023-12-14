@@ -3,7 +3,6 @@ import os
 import globals as glo
 
 from looper import main_predictor
-import torch
 
 
 max_audio_outputs = 10
@@ -34,11 +33,12 @@ def inference_call(
 ):
     # Load custom model or base release
     if model_version == "custom model":
+        # Need to test if download links work for this:
         glo.load_model(custom_model_path)
     else:
         glo.load_model(f"facebook/musicgen-{model_version}")
 
-    # Make the output folder(s) according to user's input
+    # Make the output folder(s) in the user specified location (make more efficient?)
     glo.create_output_folders(save_path, output_folder_name=output_folder_name)
 
     glo.MODEL.set_generation_params(

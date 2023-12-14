@@ -4,8 +4,8 @@ import that_dawg
 
 # Gonna split all of this into seperate processes:
 
-### Model loading (maybe as part of the base app.py)
-### Folder creation (maybe as part of the base app.py)
+### Model loading
+### Folder creation
 ### Basic inference
 ### Beat counting + trimming
 ### Beat synced continuation

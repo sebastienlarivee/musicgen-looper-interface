@@ -29,6 +29,7 @@ def load_model(version):
         MODEL = MusicGen.get_pretrained(version)
 
 
+# Create save path for generations
 def create_output_folders(base_path, output_folder_name):
     global SAVE_PATH
     # Ensure base_path ends with a slash
