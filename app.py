@@ -1,32 +1,12 @@
 import gradio as gr
 import os
+import globals
 
-from audiocraft.models import MusicGen
 from looper import main_predictor
 import torch
 
-MODEL = None
-INTERRUPTED = False
 
 max_audio_outputs = 10
-
-
-def interrupt():
-    global INTERRUPTED
-    INTERRUPTED = True
-    print("Interrupted!")
-
-
-# Loading function from the fb gradio demo
-def load_model(version):
-    global MODEL
-    print("Loading model", version)
-    if MODEL is None or MODEL.name != version:
-        # Clear PyTorch CUDA cache and delete model
-        del MODEL
-        torch.cuda.empty_cache()
-        MODEL = None  # in case loading would crash
-        MODEL = MusicGen.get_pretrained(version)
 
 
 # Handles the rendering of variable audio outputs
@@ -53,9 +33,17 @@ def inference_call(
 ):
     # Load custom model or base release
     if model_version == "custom model":
-        load_model(custom_model_path)
+        globals.load_model(custom_model_path)
     else:
-        load_model(f"facebook/musicgen-{model_version}")
+        globals.load_model(f"facebook/musicgen-{model_version}")
+
+    globals.MODEL.set_generation_params(
+        duration=max_duration,
+        top_k=250,
+        top_p=0,
+        temperature=temperature,
+        cfg_coef=guidance,
+    )
 
     # Inference parameters
     params = {
@@ -75,9 +63,6 @@ def inference_call(
     }
 
     output = main_predictor(params)
-
-    # To add later:
-    # if len(output) < variations:
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
