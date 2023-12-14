@@ -25,6 +25,7 @@ class Generate:
         self.seed = seed
         self.prompt = prompt  # + f", {bpm} bpm"
         self.output_format = output_format
+        self.save_path = glo.SAVE_PATH
         self.model = glo.MODEL
         self.sample_rate = glo.MODEL.sample_rate
         self.beatnet = BeatNet(
@@ -44,6 +45,19 @@ class Generate:
         torch.cuda.manual_seed(self.seed)
         torch.backends.cudnn.deterministic = True
 
+    def predict_from_text(self):
+        if not self.seed or self.seed == -1:
+            self.seed = torch.seed() % 2**32 - 1
+            self.set_all_seeds()
+
+        print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
+
+        prediction = (
+            self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
+        )
+        prediction = prediction / np.abs(prediction).max()
+        return prediction
+
     def estimate_beats(self, wav, sample_rate, beatnet):
         beatnet_input = librosa.resample(
             wav, orig_sr=sample_rate, target_sr=beatnet.sample_rate
@@ -62,18 +76,24 @@ class Generate:
         end_time = downbeat_times[even_num_bars]
         return start_time, end_time
 
-    def predict_from_text(self):
-        if not self.seed or self.seed == -1:
-            self.seed = torch.seed() % 2**32 - 1
-            self.set_all_seeds()
+    def write(self, audio, name):
+        wav_path = self.save_path + name + ".wav"
+        sf.write(wav_path, audio, self.sample_rate)
+        if self.output_format == "mp3":
+            mp3_path = name + ".mp3"
+            subprocess.call(
+                ["ffmpeg", "-loglevel", "error", "-y", "-i", wav_path, mp3_path]
+            )
+            os.remove(wav_path)
+            path = mp3_path
+        else:
+            path = wav_path
+        return path
 
-        print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
-
-        prediction = (
-            self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
-        )
-        prediction = prediction / np.abs(prediction).max()
-        return prediction
+    def simple_predict(self):
+        wav = self.predict_from_text()
+        output_path = self.write(audio=wav, name="simple_test")
+        return output_path
 
     def main_predictor(self):
         wav = self.predict_from_text()
@@ -105,15 +125,10 @@ class Generate:
         # Generate a random string for this set of variations
         random_string = generate_random_string()
 
-        # Initialize outputs list
-        outputs = []
-
         # Save the main output
         main_output_path = write(
             stretched,
-            model.sample_rate,
-            output_format,
-            f"{save_path}variation_01_{random_string}",
+            f"variation_01_{random_string}",
         )
         outputs.append(main_output_path)  # Append to list instead of dictionary
         # print(f"Outputs list: {outputs}")
