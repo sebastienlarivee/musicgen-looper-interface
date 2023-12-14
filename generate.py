@@ -69,23 +69,18 @@ class Generate:
 
         print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
 
-        wav = self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
-        wav = wav / np.abs(wav).max()
-        return wav
+        prediction = (
+            self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
+        )
+        prediction = prediction / np.abs(prediction).max()
+        return prediction
 
     def main_predictor(self):
-        if not self.seed or self.seed == -1:
-            self.seed = torch.seed() % 2**32 - 1
-            self.set_all_seeds()
+        wav = self.predict_from_text()
 
-        output_format = params["output_format"]
-
-        print(f"Generating: prompt: {self.prompt}, seed: {self.seed}")
-
-        wav = self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
-        wav = wav / np.abs(wav).max()
-
-        beats = self.estimate_beats(wav, self.sample_rate, self.beatnet)
+        beats = self.estimate_beats(
+            wav=wav, sample_rate=self.sample_rate, beatnet=self.beatnet
+        )
 
         start_time, end_time = self.get_loop_points(beats)
 
@@ -94,18 +89,18 @@ class Generate:
         actual_bpm = num_beats / duration * 60
 
         # Handle possible octave errors
-        if abs(actual_bpm / 2 - bpm) <= 10:
+        if abs(actual_bpm / 2 - self.bpm) <= 10:
             actual_bpm = actual_bpm / 2
-        elif abs(actual_bpm * 2 - bpm) <= 10:
+        elif abs(actual_bpm * 2 - self.bpm) <= 10:
             actual_bpm = actual_bpm * 2
 
         # Prepare the main audio loop
-        start_sample = int(start_time * model.sample_rate)
-        end_sample = int(end_time * model.sample_rate)
+        start_sample = int(start_time * self.sample_rate)
+        end_sample = int(end_time * self.sample_rate)
         loop = wav[start_sample:end_sample]
 
         # Process the audio loop for the main output
-        stretched = pyrb.time_stretch(loop, model.sample_rate, bpm / actual_bpm)
+        stretched = pyrb.time_stretch(loop, self.sample_rate, self.bpm / actual_bpm)
 
         # Generate a random string for this set of variations
         random_string = generate_random_string()
