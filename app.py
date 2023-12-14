@@ -5,7 +5,6 @@ import gradio as gr
 
 MODEL = None
 INTERRUPTED = False
-UNLOAD_MODEL = False
 
 max_audio_outputs = 10
 
