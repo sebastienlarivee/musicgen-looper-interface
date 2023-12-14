@@ -76,7 +76,7 @@ with gr.Blocks() as demo:
                     minimum=0, maximum=1, value=1, label="Temperature"
                 )
                 guidance_slider = gr.Slider(
-                    minimum=0, maximum=15, value=3, label="Classifier Free Guidance"
+                    minimum=0, maximum=15, value=3, label="CFG Scale"
                 )
 
             with gr.Row():
