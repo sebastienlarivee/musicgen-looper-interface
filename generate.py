@@ -41,8 +41,10 @@ class Generate:
         torch.backends.cudnn.deterministic = True
 
     def predict_from_text(self):
+        print(f"Initial seed: {self.seed}")
         if not self.seed or self.seed == -1:
             self.seed = torch.seed() % 2**32 - 1
+            print(f"New seed generated: {self.seed}")
             self.set_all_seeds()
 
         print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
