@@ -1,7 +1,9 @@
 import gradio as gr
+import os
 
-# from audiocraft.models import MusicGen
-# from looper import main_predictor
+from audiocraft.models import MusicGen
+from looper import main_predictor
+import torch
 
 MODEL = None
 INTERRUPTED = False
@@ -15,10 +17,15 @@ def interrupt():
     print("Interrupted!")
 
 
+# Loading function from the fb gradio demo
 def load_model(version):
     global MODEL
     print("Loading model", version)
     if MODEL is None or MODEL.name != version:
+        # Clear PyTorch CUDA cache and delete model
+        del MODEL
+        torch.cuda.empty_cache()
+        MODEL = None  # in case loading would crash
         MODEL = MusicGen.get_pretrained(version)
 
 
@@ -44,6 +51,12 @@ def inference_call(
     custom_model_path,
     save_path,
 ):
+    # Load custom model or base release
+    if model_version == "custom model":
+        load_model(custom_model_path)
+    else:
+        load_model(f"facebook/musicgen-{model_version}")
+
     # Inference parameters
     params = {
         "bpm": bpm,
