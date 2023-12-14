@@ -1,12 +1,13 @@
 import gradio as gr
 import os
-import globals
+import globals as glo
 
 from looper import main_predictor
 import torch
 
 
 max_audio_outputs = 10
+output_folder_name = "Outputs"
 
 
 # Handles the rendering of variable audio outputs
@@ -33,11 +34,14 @@ def inference_call(
 ):
     # Load custom model or base release
     if model_version == "custom model":
-        globals.load_model(custom_model_path)
+        glo.load_model(custom_model_path)
     else:
-        globals.load_model(f"facebook/musicgen-{model_version}")
+        glo.load_model(f"facebook/musicgen-{model_version}")
 
-    globals.MODEL.set_generation_params(
+    # Make the output folder(s) according to user's input
+    glo.create_output_folders(save_path, output_folder_name=output_folder_name)
+
+    glo.MODEL.set_generation_params(
         duration=max_duration,
         top_k=250,
         top_p=0,

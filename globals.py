@@ -29,9 +29,8 @@ def load_model(version):
         MODEL = MusicGen.get_pretrained(version)
 
 
-def create_output_folders(base_path):
+def create_output_folders(base_path, output_folder_name):
     global SAVE_PATH
-    output_folder_name = "Outputs"
     # Ensure base_path ends with a slash
     if not base_path.endswith(os.sep):
         base_path += os.sep
@@ -49,4 +48,4 @@ def create_output_folders(base_path):
         os.makedirs(date_folder_path)
 
     # Return the path to the folder
-    return date_folder_path
+    SAVE_PATH = date_folder_path
