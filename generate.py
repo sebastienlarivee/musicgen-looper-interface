@@ -20,10 +20,11 @@ madmom.audio.filters.np.float = float
 
 
 class Generate:
-    def __init__(self, bpm, seed, prompt):
+    def __init__(self, bpm, seed, prompt, output_format):
         self.bpm = bpm
         self.seed = seed
-        self.prompt = prompt + f", {bpm} bpm"
+        self.prompt = prompt  # + f", {bpm} bpm"
+        self.output_format = output_format
         self.model = glo.MODEL
         self.sample_rate = glo.MODEL.sample_rate
         self.beatnet = BeatNet(
@@ -44,7 +45,6 @@ class Generate:
         torch.backends.cudnn.deterministic = True
 
     def estimate_beats(self, wav, sample_rate, beatnet):
-        # Estimate beats from a waveform using the specified sample rate and BeatNet instance.
         beatnet_input = librosa.resample(
             wav, orig_sr=sample_rate, target_sr=beatnet.sample_rate
         )
