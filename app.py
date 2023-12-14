@@ -12,6 +12,7 @@ def variable_outputs(k):
     )
 
 
+# Can reuse this inference call component to send calls to multiple different types of calls!
 def inference_call(
     bpm,
     seed,
