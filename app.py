@@ -57,7 +57,9 @@ def inference_call(
 
     output = []
     random_string = generate_random_string()
-    predict = Generate(bpm=bpm, seed=seed, prompt=prompt, output_format=output_format)
+    predict = Generate(
+        bpm=bpm, seed=int(seed), prompt=prompt, output_format=output_format
+    )
 
     for i in range(variations):
         name = f"{random_string}_variation_{i:02d}"
