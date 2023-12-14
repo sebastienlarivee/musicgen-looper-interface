@@ -45,7 +45,8 @@ class Generate:
         if not self.seed or self.seed == -1:
             self.seed = torch.seed() % 2**32 - 1
             print(f"New seed generated: {self.seed}")
-            self.set_all_seeds()
+
+        self.set_all_seeds()
 
         print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
 
@@ -92,6 +93,7 @@ class Generate:
     def simple_predict(self, name):
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
+        self.seed += 1
         return output_path
 
     def main_predictor(self):
