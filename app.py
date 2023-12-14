@@ -52,8 +52,7 @@ def inference_call(
 
     output = []
     predict = Generate(bpm=bpm, seed=seed, prompt=prompt, output_format=output_format)
-    output += predict.simple_predict()
-    print(output)
+    output.append(predict.simple_predict())
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
