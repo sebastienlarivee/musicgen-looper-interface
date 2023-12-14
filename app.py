@@ -1,6 +1,5 @@
 import gradio as gr
-
-# from looper import main_predictor
+from looper import main_predictor
 
 max_audio_outputs = 10
 
