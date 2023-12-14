@@ -1,8 +1,26 @@
 import gradio as gr
 
+# from audiocraft.models import MusicGen
 # from looper import main_predictor
 
+MODEL = None
+INTERRUPTED = False
+UNLOAD_MODEL = False
+
 max_audio_outputs = 10
+
+
+def interrupt():
+    global INTERRUPTED
+    INTERRUPTED = True
+    print("Interrupted!")
+
+
+def load_model(version):
+    global MODEL
+    print("Loading model", version)
+    if MODEL is None or MODEL.name != version:
+        MODEL = MusicGen.get_pretrained(version)
 
 
 # Handles the rendering of variable audio outputs
