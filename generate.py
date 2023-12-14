@@ -25,6 +25,15 @@ class Generate:
         self.seed = seed
         self.prompt = prompt + f", {bpm} bpm"
         self.model = glo.MODEL
+        self.sample_rate = glo.MODEL.sample_rate
+        self.beatnet = BeatNet(
+            1,
+            mode="offline",
+            inference_model="DBN",
+            plot=[],
+            thread=False,
+            device="cuda:0",
+        )
 
     def set_all_seeds(self):
         random.seed(self.seed)
@@ -34,54 +43,52 @@ class Generate:
         torch.cuda.manual_seed(self.seed)
         torch.backends.cudnn.deterministic = True
 
-    def main_predictor(params):
-        beatnet = BeatNet(
-            1,
-            mode="offline",
-            inference_model="DBN",
-            plot=[],
-            thread=False,
-            device="cuda:0",
+    def estimate_beats(self, wav, sample_rate, beatnet):
+        # Estimate beats from a waveform using the specified sample rate and BeatNet instance.
+        beatnet_input = librosa.resample(
+            wav, orig_sr=sample_rate, target_sr=beatnet.sample_rate
         )
+        return beatnet.process(beatnet_input)
 
-        bpm = params["bpm"]
-        seed = params["seed"]
-        top_k = params["top_k"]
-        top_p = params["top_p"]
-        prompt = params["prompt"]
-        variations = params["variations"]
-        temperature = params["temperature"]
-        max_duration = params["max_duration"]
-        model_version = params["model_version"]
+    def get_loop_points(self, beats):
+        downbeat_times = beats[:, 0][beats[:, 1] == 1]
+        num_bars = len(downbeat_times) - 1
+        if num_bars < 1:
+            raise ValueError(
+                "Less than one bar detected. Try increasing max_duration, or use a different seed."
+            )
+        even_num_bars = int(2 ** np.floor(np.log2(num_bars)))
+        start_time = downbeat_times[0]
+        end_time = downbeat_times[even_num_bars]
+        return start_time, end_time
+
+    def predict_from_text(self):
+        if not self.seed or self.seed == -1:
+            self.seed = torch.seed() % 2**32 - 1
+            self.set_all_seeds()
+
+        print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
+
+        wav = self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
+        wav = wav / np.abs(wav).max()
+        return wav
+
+    def main_predictor(self):
+        if not self.seed or self.seed == -1:
+            self.seed = torch.seed() % 2**32 - 1
+            self.set_all_seeds()
+
         output_format = params["output_format"]
-        guidance = params["classifier_free_guidance"]
-        base_save_path = params["save_path"]
 
-        save_path = create_output_folders(base_save_path)
+        print(f"Generating: prompt: {self.prompt}, seed: {self.seed}")
 
-        model.set_generation_params(
-            duration=max_duration,
-            top_k=top_k,
-            top_p=top_p,
-            temperature=temperature,
-            cfg_coef=guidance,
-        )
-
-        if not seed or seed == -1:
-            seed = torch.seed() % 2**32 - 1
-        set_all_seeds(seed)
-
-        print(
-            f"Generating: {model_version}, {variations} variation(s), prompt: {prompt}, seed: {seed}"
-        )
-
-        prompt = prompt + f", {bpm} bpm"
-        print("Variation 01: generating...")
-        wav = model.generate([prompt], progress=True).cpu().numpy()[0, 0]
+        wav = self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
         wav = wav / np.abs(wav).max()
 
-        beats = estimate_beats(wav, model.sample_rate, beatnet)
-        start_time, end_time = get_loop_points(beats)
+        beats = self.estimate_beats(wav, self.sample_rate, self.beatnet)
+
+        start_time, end_time = self.get_loop_points(beats)
+
         num_beats = len(beats[(beats[:, 0] >= start_time) & (beats[:, 0] < end_time)])
         duration = end_time - start_time
         actual_bpm = num_beats / duration * 60
