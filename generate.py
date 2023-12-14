@@ -53,6 +53,7 @@ class Generate:
             self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
         )
         prediction = prediction / np.abs(prediction).max()
+        print(f"Last seed: {self.seed}")
         return prediction
 
     def estimate_beats(self, wav, sample_rate, beatnet):
