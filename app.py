@@ -1,5 +1,6 @@
 import gradio as gr
-from looper import main_predictor
+
+# from looper import main_predictor
 
 max_audio_outputs = 10
 
@@ -54,49 +55,67 @@ def inference_call(
 
 # Gradio interface layout
 with gr.Blocks() as demo:
-    with gr.Row():
+    with gr.Tab("Generate"):
+        with gr.Row():
+            with gr.Column():
+                prompt_input = gr.Textbox(
+                    label="Prompt",
+                    placeholder="chill lofi beat, hot summer day, relaxing",
+                )
+
+                with gr.Row():
+                    bpm_slider = gr.Slider(
+                        minimum=50, maximum=250, value=100, label="BPM"
+                    )
+                    max_duration_slider = gr.Slider(
+                        minimum=5, maximum=30, value=10, step=1, label="Max Duration"
+                    )
+                    variations_slider = gr.Slider(
+                        minimum=1,
+                        maximum=max_audio_outputs,
+                        value=1,
+                        step=1,
+                        label="Variations",
+                    )
+                with gr.Row():
+                    seed_input = gr.Textbox(value=-1, label="Seed")
+                    temperature_slider = gr.Slider(
+                        minimum=0, maximum=1, value=1, label="Temperature"
+                    )
+                    guidance_slider = gr.Slider(
+                        minimum=0, maximum=15, value=3, label="CFG Scale"
+                    )
+
+                submit_button = gr.Button("Submit")
+            with gr.Column():
+                audio_outputs = []
+                for i in range(max_audio_outputs):
+                    a = gr.Audio()
+                    audio_outputs.append(a)
+        variations_slider.change(variable_outputs, variations_slider, audio_outputs)
+    with gr.Tab("Settings"):
         with gr.Column():
-            prompt_input = gr.Textbox(label="Prompt", value="chill lofi beat")
-
-            with gr.Row():
-                bpm_slider = gr.Slider(minimum=50, maximum=250, value=100, label="BPM")
-                max_duration_slider = gr.Slider(
-                    minimum=5, maximum=30, value=10, step=1, label="Max Duration"
-                )
-                variations_slider = gr.Slider(
-                    minimum=1,
-                    maximum=max_audio_outputs,
-                    value=1,
-                    step=1,
-                    label="Variations",
-                )
-            with gr.Row():
-                seed_input = gr.Textbox(value=-1, label="Seed")
-                temperature_slider = gr.Slider(
-                    minimum=0, maximum=1, value=1, label="Temperature"
-                )
-                guidance_slider = gr.Slider(
-                    minimum=0, maximum=15, value=3, label="CFG Scale"
-                )
-
-            with gr.Row():
-                output_format_toggle = gr.Radio(
-                    choices=["wav", "mp3"], value="wav", label="Output Format"
-                )
-                model_version_toggle = gr.Radio(
-                    choices=["medium", "large", "stereo-medium", "stereo-large"],
-                    value="medium",
-                    label="Model Version",
-                )
-
-            submit_button = gr.Button("Submit")
+            output_format_toggle = gr.Radio(
+                choices=["wav", "mp3"], value="wav", label="Output Format"
+            )
         with gr.Column():
-            audio_outputs = []
-            for i in range(max_audio_outputs):
-                a = gr.Audio()
-                audio_outputs.append(a)
-
-    variations_slider.change(variable_outputs, variations_slider, audio_outputs)
+            model_version_toggle = gr.Radio(
+                choices=[
+                    "small",
+                    "medium",
+                    "large",
+                    "stereo-small",
+                    "stereo-medium",
+                    "stereo-large",
+                    "custom model",
+                ],
+                value="stereo-large",
+                label="Model Version",
+            )
+            custom_model_version = gr.Textbox(
+                label="Custom Model Path",
+                placeholder="File path to your model",
+            )
 
     submit_button.click(
         fn=inference_call,
