@@ -3,6 +3,7 @@ import os
 import globals as glo
 
 from looper import main_predictor
+from generate import Generate
 
 
 max_audio_outputs = 10
