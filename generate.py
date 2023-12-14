@@ -41,10 +41,8 @@ class Generate:
         torch.backends.cudnn.deterministic = True
 
     def predict_from_text(self):
-        print(f"Initial seed: {self.seed}")
         if not self.seed or self.seed == -1:
             self.seed = torch.seed() % 2**32 - 1
-            print(f"New seed generated: {self.seed}")
 
         self.set_all_seeds()
 
@@ -54,7 +52,7 @@ class Generate:
             self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
         )
         prediction = prediction / np.abs(prediction).max()
-        print(f"Last seed: {self.seed}")
+        self.seed += 1
         return prediction
 
     def estimate_beats(self, wav, sample_rate, beatnet):
@@ -93,7 +91,6 @@ class Generate:
     def simple_predict(self, name):
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
-        # self.seed += 1
         return output_path
 
     def main_predictor(self):
