@@ -85,29 +85,51 @@ def write(audio, sample_rate, output_format, name):
 loaded_models = {}
 
 
-def load_model(model_id, device, model_version):
+def load_fb_model(model_id, device):
     # Check if the model is already loaded
     if model_id in loaded_models:
         return loaded_models[model_id]
 
     # Load the model since it's not loaded yet
-    print(f"Loading model: {model_version}...")
+    print(f"Loading model: {model_id}...")
     compression_model = load_compression_model(model_id, device=device)
     lm = load_lm_model(model_id, device=device)
-    music_gen_model = MusicGen(model_id, compression_model, lm)
+    musicgen_model = MusicGen(model_id, compression_model, lm)
 
     # Store the loaded model in the dictionary
-    loaded_models[model_id] = music_gen_model
+    loaded_models[model_id] = musicgen_model
     print(f"Model loaded!")
-    return music_gen_model
+    return musicgen_model
+
+
+def load_custom_model(custom_model_path):
+    # Check if the model is already loaded
+    if custom_model_path in loaded_models:
+        return loaded_models[custom_model_path]
+
+    # Load the model since it's not loaded yet
+    print("Loading custom model...")
+    musicgen_model = MusicGen.get_pretrained(custom_model_path)
+
+    # Store the loaded model in the dictionary
+    loaded_models[custom_model_path] = musicgen_model
+    print("Model loaded!")
+    return musicgen_model
 
 
 def main_predictor(params):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # Determine which model to load based on the 'model_version' parameter
     model_version = params["model_version"]
-    model_identifier = f"facebook/musicgen-{model_version}"  # Matches audiocraft naming scheme, needs to be more robust
-    model = load_model(model_identifier, device, model_version)
+
+    if model_version == "custom model":
+        custom_model_path = params["custom_model_path"]
+        model_id = custom_model_path
+        model = load_custom_model(custom_model_path)
+    else:
+        model_id = f"facebook/musicgen-{model_version}"  # Matches audiocraft naming scheme, needs to be more robust
+        model = load_fb_model(model_id, device)
+
     beatnet = BeatNet(
         1, mode="offline", inference_model="DBN", plot=[], thread=False, device="cuda:0"
     )
@@ -123,6 +145,7 @@ def main_predictor(params):
     model_version = params["model_version"]
     output_format = params["output_format"]
     guidance = params["classifier_free_guidance"]
+
     save_path = "/tmp/"  # Set like this for colab, will implement a more general solution with a settings tab
 
     print(

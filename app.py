@@ -109,10 +109,10 @@ with gr.Blocks() as demo:
                     "stereo-large",
                     "custom model",
                 ],
-                value="stereo-large",
+                value="small",
                 label="Model Version",
             )
-            custom_model_version = gr.Textbox(
+            custom_model_path = gr.Textbox(
                 label="Custom Model Path",
                 placeholder="File path to your model",
             )
@@ -129,6 +129,7 @@ with gr.Blocks() as demo:
             model_version_toggle,
             output_format_toggle,
             guidance_slider,
+            custom_model_path,
         ],
         outputs=audio_outputs,
     )
