@@ -1,17 +1,12 @@
 import globals as glo
-
 import os
-import datetime
 import random
-import uuid
-import gc
 import subprocess
 import torch
 import numpy as np
 import soundfile as sf
 import librosa
 import pyrubberband as pyrb
-from audiocraft.models import MusicGen
 from BeatNet.BeatNet import BeatNet
 import madmom.audio.filters
 
