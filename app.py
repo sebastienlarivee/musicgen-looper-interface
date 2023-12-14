@@ -1,5 +1,6 @@
 import gradio as gr
-from looper import main_predictor
+
+# from looper import main_predictor
 
 max_audio_outputs = 10
 
@@ -59,6 +60,7 @@ def inference_call(
 
 # Gradio interface layout
 with gr.Blocks() as demo:
+    # Generate tab
     with gr.Tab("Generate"):
         with gr.Row():
             with gr.Column():
@@ -97,6 +99,11 @@ with gr.Blocks() as demo:
                     a = gr.Audio()
                     audio_outputs.append(a)
         variations_slider.change(variable_outputs, variations_slider, audio_outputs)
+    # Generate continuations tab
+    with gr.Tab("Generate continuations"):
+        with gr.Column():
+            gr.Markdown("Placeholder")
+    # Settings tab
     with gr.Tab("Settings"):
         with gr.Column():
             with gr.Row():
