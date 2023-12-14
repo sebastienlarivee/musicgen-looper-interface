@@ -147,10 +147,6 @@ def main_predictor(params):
     guidance = params["classifier_free_guidance"]
     save_path = params["save_path"]
 
-    print(
-        f"Generating: {model_version}, {variations} variation(s), prompt: {prompt}, seed: {seed}"
-    )
-
     model.set_generation_params(
         duration=max_duration,
         top_k=top_k,
@@ -162,6 +158,10 @@ def main_predictor(params):
     if not seed or seed == -1:
         seed = torch.seed() % 2**32 - 1
     set_all_seeds(seed)
+
+    print(
+        f"Generating: {model_version}, {variations} variation(s), prompt: {prompt}, seed: {seed}"
+    )
 
     prompt = prompt + f", {bpm} bpm"
     print("Variation 01: generating...")
