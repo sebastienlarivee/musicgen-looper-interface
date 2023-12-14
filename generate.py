@@ -60,6 +60,7 @@ class Generate:
 
     def write(self, audio, name):
         wav_path = self.save_path + name + ".wav"
+        print(wav_path)
         sf.write(wav_path, audio, self.sample_rate)
         if self.output_format == "mp3":
             mp3_path = name + ".mp3"
