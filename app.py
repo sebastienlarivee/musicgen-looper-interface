@@ -23,6 +23,7 @@ def inference_call(
     model_version,
     output_format,
     guidance,
+    custom_model_path,
 ):
     # Inference parameters
     params = {
@@ -37,6 +38,7 @@ def inference_call(
         "model_version": model_version,
         "output_format": output_format,
         "classifier_free_guidance": guidance,
+        "custom_model_path": custom_model_path,
     }
 
     output = main_predictor(params)
