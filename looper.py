@@ -27,6 +27,8 @@ import madmom.audio.filters
 # Hack madmom to work with recent python
 madmom.audio.filters.np.float = float
 
+loaded_models = {}
+
 
 def set_all_seeds(seed):
     random.seed(seed)
@@ -77,7 +79,16 @@ def write(audio, sample_rate, output_format, name):
     return path
 
 
-loaded_models = {}
+def create_folder(path):
+    newpath = path
+    try:
+        if not os.path.exists(path):
+            os.makedirs(path)
+            print(f"Folder created at: {path}")
+        else:
+            print(f"Folder already exists at: {path}")
+    except Exception as e:
+        print(f"Error creating folder: {e}")
 
 
 def load_fb_model(model_id, device):
@@ -140,7 +151,9 @@ def main_predictor(params):
     model_version = params["model_version"]
     output_format = params["output_format"]
     guidance = params["classifier_free_guidance"]
-    save_path = params["save_path"]
+    base_save_path = params["save_path"]
+
+    save_path = create_folder(base_save_path)
 
     model.set_generation_params(
         duration=max_duration,
