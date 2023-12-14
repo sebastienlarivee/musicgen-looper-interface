@@ -273,7 +273,7 @@ def main_predictor(params):
                 variation_stretched,
                 model.sample_rate,
                 output_format,
-                f"{save_path}variation_{i:02d}_{random_string}",
+                f"/{save_path}variation_{i:02d}_{random_string}",
             )
             outputs.append(variation_output_path)  # Append to list
             # print(f"Outputs list: {outputs}")
