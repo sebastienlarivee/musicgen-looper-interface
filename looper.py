@@ -27,11 +27,6 @@ import madmom.audio.filters
 # Hack madmom to work with recent python
 madmom.audio.filters.np.float = float
 
-# Global model path
-""" MODEL_PATH = "/src/models/"
-os.environ["TRANSFORMERS_CACHE"] = MODEL_PATH
-os.environ["TORCH_HOME"] = MODEL_PATH """
-
 
 def set_all_seeds(seed):
     random.seed(seed)
