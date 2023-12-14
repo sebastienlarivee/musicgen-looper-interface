@@ -58,6 +58,24 @@ class Generate:
         prediction = prediction / np.abs(prediction).max()
         return prediction
 
+    def estimate_beats(self, wav, sample_rate, beatnet):
+        beatnet_input = librosa.resample(
+            wav, orig_sr=sample_rate, target_sr=beatnet.sample_rate
+        )
+        return beatnet.process(beatnet_input)
+
+    def get_loop_points(self, beats):
+        downbeat_times = beats[:, 0][beats[:, 1] == 1]
+        num_bars = len(downbeat_times) - 1
+        if num_bars < 1:
+            raise ValueError(
+                "Less than one bar detected. Try increasing max_duration, or use a different seed."
+            )
+        even_num_bars = int(2 ** np.floor(np.log2(num_bars)))
+        start_time = downbeat_times[0]
+        end_time = downbeat_times[even_num_bars]
+        return start_time, end_time
+
     def write(self, audio, name):
         wav_path = self.save_path + name + ".wav"
         print(wav_path)
@@ -77,3 +95,41 @@ class Generate:
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name="simple_test")
         return output_path
+
+    def main_predictor(self):
+        wav = self.predict_from_text()
+
+        beats = self.estimate_beats(
+            wav=wav, sample_rate=self.sample_rate, beatnet=self.beatnet
+        )
+
+        start_time, end_time = self.get_loop_points(beats)
+
+        num_beats = len(beats[(beats[:, 0] >= start_time) & (beats[:, 0] < end_time)])
+        duration = end_time - start_time
+        actual_bpm = num_beats / duration * 60
+
+        # Handle possible octave errors
+        if abs(actual_bpm / 2 - self.bpm) <= 10:
+            actual_bpm = actual_bpm / 2
+        elif abs(actual_bpm * 2 - self.bpm) <= 10:
+            actual_bpm = actual_bpm * 2
+
+        # Prepare the main audio loop
+        start_sample = int(start_time * self.sample_rate)
+        end_sample = int(end_time * self.sample_rate)
+        loop = wav[start_sample:end_sample]
+
+        # Process the audio loop for the main output
+        stretched = pyrb.time_stretch(loop, self.sample_rate, self.bpm / actual_bpm)
+
+        # Generate a random string for this set of variations
+        random_string = generate_random_string()
+
+        # Save the main output
+        main_output_path = write(
+            stretched,
+            f"variation_01_{random_string}",
+        )
+        outputs.append(main_output_path)  # Append to list instead of dictionary
+        # print(f"Outputs list: {outputs}")
