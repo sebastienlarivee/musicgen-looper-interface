@@ -10,20 +10,12 @@ max_audio_outputs = 10
 output_folder_name = "Outputs"
 
 
-# Handles the rendering of variable audio outputs
-def variable_outputs(k):
-    k = int(k)
-    return [gr.Audio(visible=True)] * k + [gr.Audio(visible=False)] * (
-        max_audio_outputs - k
-    )
-
-
 def get_random_string(length=5):
     random_str = str(uuid.uuid4()).replace("-", "")[:length]
     return random_str
 
 
-# Can reuse this inference call component to send calls to multiple different types of calls!
+# Convert this to a class for better reusability (need to see if that's ok with gradio)
 def inference_call(
     bpm,
     seed,
@@ -36,6 +28,7 @@ def inference_call(
     guidance,
     custom_model_path,
     save_path,
+    audio_prompt,
 ):
     # Load custom model or base release
     if model_version == "custom model":
@@ -54,7 +47,8 @@ def inference_call(
     # Pass parameters from the gradio interface to the generation code
     predict = Generate(
         bpm=bpm,
-        prompt=prompt,
+        text_prompt=prompt,
+        audio_prompt=audio_prompt,
         duration=max_duration,
         temperature=temperature,
         cfg_coef=guidance,
@@ -75,9 +69,19 @@ def inference_call(
     return padded_output
 
 
-# Gradio interface layout
-with gr.Blocks() as demo:
-    # Generate tab
+# GRADIO INTERFACE
+
+
+# Handles the rendering of variable audio outputs
+def variable_outputs(k):
+    k = int(k)
+    return [gr.Audio(visible=True)] * k + [gr.Audio(visible=False)] * (
+        max_audio_outputs - k
+    )
+
+
+with gr.Blocks() as interface:
+    # Generate from text tab
     with gr.Tab("Generate"):
         with gr.Row():
             with gr.Column():
@@ -100,6 +104,7 @@ with gr.Blocks() as demo:
                         step=1,
                         label="Variations",
                     )
+
                 with gr.Row():
                     seed_input = gr.Textbox(value=-1, label="Seed")
                     temperature_slider = gr.Slider(
@@ -116,10 +121,38 @@ with gr.Blocks() as demo:
                     a = gr.Audio()
                     audio_outputs.append(a)
         variations_slider.change(variable_outputs, variations_slider, audio_outputs)
+
     # Generate continuations tab
     with gr.Tab("Generate continuations"):
-        with gr.Column():
-            gr.Markdown("Placeholder")
+        with gr.Row():
+            with gr.Column():
+                prompt_input2 = gr.Textbox(
+                    label="Prompt",
+                    placeholder="chill lofi beat, hot summer day, relaxing",
+                )
+                audio_input = gr.Audio()
+
+                with gr.Row():
+                    bpm_slider2 = gr.Slider(
+                        minimum=50, maximum=250, value=100, label="BPM"
+                    )
+                    max_duration_slider2 = gr.Slider(
+                        minimum=5, maximum=30, value=10, step=1, label="Max Duration"
+                    )
+
+                with gr.Row():
+                    seed_input2 = gr.Textbox(value=-1, label="Seed")
+                    temperature_slider2 = gr.Slider(
+                        minimum=0, maximum=1, value=1, label="Temperature"
+                    )
+                    guidance_slider2 = gr.Slider(
+                        minimum=0, maximum=15, value=3, label="CFG Scale"
+                    )
+
+                submit_button2 = gr.Button("Submit")
+            with gr.Column():
+                audio_outputs2 = gr.Audio()
+
     # Settings tab
     with gr.Tab("Settings"):
         with gr.Column():
@@ -150,6 +183,7 @@ with gr.Blocks() as demo:
                     choices=["wav", "mp3"], value="wav", label="Output Format"
                 )
 
+    # Action handlers (NEED TO CLEAN THESE UP FOR NEXT RELEASE)
     submit_button.click(
         fn=inference_call,
         inputs=[
@@ -168,7 +202,25 @@ with gr.Blocks() as demo:
         outputs=audio_outputs,
     )
 
+    submit_button2.click(
+        fn=inference_call,
+        inputs=[
+            bpm_slider2,
+            seed_input2,
+            prompt_input2,
+            variations_slider,
+            temperature_slider2,
+            max_duration_slider2,
+            model_version_toggle,
+            output_format_toggle,
+            guidance_slider2,
+            custom_model_path,
+            save_path_input,
+        ],
+        outputs=audio_outputs,
+    )
+
 
 if __name__ == "__main__":
     print("Launching MusicGen Looper interface...")
-    demo.launch(share=True)
+    interface.launch(share=True)

@@ -10,13 +10,21 @@ import pyrubberband as pyrb
 from BeatNet.BeatNet import BeatNet
 import madmom.audio.filters
 
-# Hack madmom to work with recent python
+# Hack madmom to work with recent python (need to figure out that madmom is actually doing)
 madmom.audio.filters.np.float = float
 
 
 class Generate:
     def __init__(
-        self, bpm, prompt, duration, temperature, cfg_coef, output_format, seed
+        self,
+        bpm,
+        text_prompt,
+        audio_prompt,
+        duration,
+        temperature,
+        cfg_coef,
+        output_format,
+        seed,
     ):
         # Global variables:
         self.save_path = glo.SAVE_PATH
@@ -25,7 +33,8 @@ class Generate:
 
         # Variables passed from app.py
         self.bpm = bpm
-        self.prompt = prompt
+        self.text_prompt = text_prompt
+        self.audio_prompt = audio_prompt
         self.output_format = output_format
         self.duration = duration
         self.temperature = temperature
