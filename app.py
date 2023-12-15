@@ -63,7 +63,7 @@ def inference_call(
     )
 
     for i in range(variations):
-        name = f"{random_string}_variation_{i:02d}"
+        name = f"{random_string}_variation_{i+1:02d}"
         output.append(predict.loop_predict(name=name))
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
