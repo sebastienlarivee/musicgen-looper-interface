@@ -144,10 +144,6 @@ class Generate:
         # Generates audio from an audio prompt
         self.set_all_seeds()
         self.set_generation_params()
-        prompt_duration = 3
-        self.audio_prompt = self.audio_prompt[
-            ..., -int(prompt_duration * self.prompt_sample_rate) :
-        ]
         generation = (
             self.model.generate_continuation(
                 prompt=self.audio_prompt,
@@ -167,6 +163,12 @@ class Generate:
         return output_path
 
     def simple_generate_from_audio(self, name):
+        prompt_duration = 3  # Placeholder value for testing
+
+        self.audio_prompt = self.audio_prompt[
+            ..., -int(prompt_duration * self.prompt_sample_rate) :
+        ]
+
         wav = self.generate_from_audio()
         output_path = self.write(audio=wav, name=name)
         self.seed += 1  # For batch generation
