@@ -181,3 +181,12 @@ class Generate:
         output_path = self.write(audio=loop, name=name)
         self.seed += 1  # For batch generation
         return output_path
+
+    def loop_generate_from_audio(self, name):
+        prompt_beats = 4  # placeholder, make variable?
+        prompt_duration = (60 / self.bpm) * prompt_beats
+        self.duration = prompt_duration + self.audio_prompt * self.prompt_sample_rate
+        self.set_generation_params()
+        self.audio_prompt = self.audio_prompt[
+            ..., -int(prompt_duration * self.prompt_sample_rate) :
+        ]
