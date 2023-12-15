@@ -43,6 +43,7 @@ def inference_call(
     prompt = prompt + f", {bpm} bpm"
     output = []
     random_string = get_random_string()
+    print(audio_prompt)
 
     # Pass parameters from the gradio interface to the generation code
     predict = Generate(
