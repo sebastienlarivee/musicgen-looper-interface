@@ -100,44 +100,44 @@ class Generate:
             path = wav_path
         return path
 
-    def predict_from_text(self):
+    def generate_from_text(self):
         # Generates audio from a text prompt
         self.set_all_seeds()
 
         print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
 
-        prediction = (
+        generation = (
             self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
         )
-        prediction = prediction / np.abs(prediction).max()
-        return prediction
+        generation = generation / np.abs(generation).max()
+        return generation
 
-    def predict_from_audio(self):
+    def generate_from_audio(self):
         # Generates audio from an audio prompt
-        prediction = self.model.generate_continuation(
+        generation = self.model.generate_continuation(
             prompt=self.audio_prompt,
             # I bet I'll need to do some sample rate mods to pass audio w/ a different sample rate
             prompt_sample_rate=self.model.sample_rate,
-            # Ok sick there's text conditioning on audio prompts!!
+            # Ok sick there's text conditioning on audio prompts!! to do: build song structure prompt interface
             descriptions=[self.prompt],
             progress=True,
         )
-        return prediction
+        return generation
 
-    def simple_predict(self, name):
+    def simple_generate_from_text(self, name):
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
         self.seed += 1
         return output_path
 
-    def simple_predict_from_audio(self, name):
-        wav = self.predict_from_audio()
+    def simple_generate_from_audio(self, name):
+        wav = self.generate_from_audio()
         output_path = self.write(audio=wav, name=name)
         self.seed += 1
         return output_path
 
-    def loop_predict(self, name):
-        wav = self.predict_from_text()
+    def loop_generate_from_text(self, name):
+        wav = self.generate_from_text()
         beats = self.estimate_beats(wav=wav)
         loop = self.get_loop_points(beats=beats, wav=wav)
         output_path = self.write(audio=loop, name=name)

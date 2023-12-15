@@ -18,7 +18,7 @@ def variable_outputs(k):
     )
 
 
-def generate_random_string(length=5):
+def get_random_string(length=5):
     random_str = str(uuid.uuid4()).replace("-", "")[:length]
     return random_str
 
@@ -57,14 +57,14 @@ def inference_call(
 
     prompt = prompt + f", {bpm} bpm"
     output = []
-    random_string = generate_random_string()
+    random_string = get_random_string()
     predict = Generate(
         bpm=bpm, seed=int(seed), prompt=prompt, output_format=output_format
     )
 
     for i in range(variations):
         name = f"{random_string}_variation_{i+1:02d}"
-        output.append(predict.loop_predict(name=name))
+        output.append(predict.loop_generate_from_text(name=name))
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
