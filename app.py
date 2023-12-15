@@ -215,6 +215,7 @@ with gr.Blocks() as interface:
             guidance_slider2,
             custom_model_path,
             save_path_input,
+            audio_input,
         ],
         outputs=audio_outputs2,
     )
