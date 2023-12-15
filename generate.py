@@ -17,7 +17,6 @@ madmom.audio.filters.np.float = float
 class Generate:
     def __init__(self, bpm, seed, prompt, output_format):
         self.bpm = bpm
-        self.seed = seed
         self.prompt = prompt  # + f", {bpm} bpm"
         self.output_format = output_format
         self.save_path = glo.SAVE_PATH
@@ -31,8 +30,10 @@ class Generate:
             thread=False,
             device="cuda:0",
         )
-        if not self.seed or self.seed == -1:
+        if not seed or seed == -1:
             self.seed = torch.seed() % 2**32 - 1
+        else:
+            self.seed = seed
 
     def set_all_seeds(self):
         random.seed(self.seed)
