@@ -122,7 +122,7 @@ with gr.Blocks() as interface:
                     audio_outputs.append(a)
         variations_slider.change(variable_outputs, variations_slider, audio_outputs)
 
-    # Generate continuations tab
+    # Generate continuations from audio tab
     with gr.Tab("Generate continuations"):
         with gr.Row():
             with gr.Column():
@@ -139,6 +139,13 @@ with gr.Blocks() as interface:
                     max_duration_slider2 = gr.Slider(
                         minimum=5, maximum=30, value=10, step=1, label="Max Duration"
                     )
+                    variations_slider2 = gr.Slider(
+                        minimum=1,
+                        maximum=max_audio_outputs,
+                        value=1,
+                        step=1,
+                        label="Variations",
+                    )
 
                 with gr.Row():
                     seed_input2 = gr.Textbox(value=-1, label="Seed")
@@ -151,7 +158,11 @@ with gr.Blocks() as interface:
 
                 submit_button2 = gr.Button("Submit")
             with gr.Column():
-                audio_outputs2 = gr.Audio(type="filepath")
+                audio_outputs2 = []
+                for i in range(max_audio_outputs):
+                    a = gr.Audio()
+                    audio_outputs.append(a)
+        variations_slider2.change(variable_outputs, variations_slider, audio_outputs)
 
     # Settings tab
     with gr.Tab("Settings"):
@@ -208,7 +219,7 @@ with gr.Blocks() as interface:
             bpm_slider2,
             seed_input2,
             prompt_input2,
-            variations_slider,
+            variations_slider2,
             temperature_slider2,
             max_duration_slider2,
             model_version_toggle,
