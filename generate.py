@@ -144,14 +144,13 @@ class Generate:
         # Generates audio from an audio prompt
         self.set_all_seeds()
         self.set_generation_params()
-        prompt_duration = 2
+        prompt_duration = 3
         self.audio_prompt = self.audio_prompt[
             ..., : int(prompt_duration * self.prompt_sample_rate)
         ]
         generation = (
             self.model.generate_continuation(
                 prompt=self.audio_prompt,
-                # I bet I'll need to do some sample rate mods to pass audio w/ a different sample rate
                 prompt_sample_rate=self.prompt_sample_rate,
                 descriptions=[self.text_prompt],
                 progress=True,
