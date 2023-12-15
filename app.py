@@ -51,6 +51,7 @@ def inference_call(
     output = []
     random_string = get_random_string()
 
+    # Pass parameters from the gradio interface to the generation code
     predict = Generate(
         bpm=bpm,
         prompt=prompt,
