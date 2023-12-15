@@ -3,6 +3,7 @@ import os
 import random
 import subprocess
 import torch
+import torchaudio
 import numpy as np
 import soundfile as sf
 import librosa
@@ -34,7 +35,7 @@ class Generate:
         # Variables passed from app.py
         self.bpm = bpm
         self.text_prompt = text_prompt
-        self.audio_prompt = audio_prompt
+        self.audio_prompt, self.prompt_sample_rate = torchaudio.load(audio_prompt)
         self.output_format = output_format
         self.duration = float(duration)
         self.temperature = temperature
@@ -142,16 +143,16 @@ class Generate:
     def generate_from_audio(self):
         # Generates audio from an audio prompt
         self.set_all_seeds()
-        audio_prompt_duration = self.audio_prompt * self.sample_rate
-        print(f"Duration: {self.duration}")
-        print(f"Duration: {audio_prompt_duration}")
-        # self.duration += audio_prompt_duration  # needs to be less than 30s total
         self.set_generation_params()
+        prompt_duration = 2
+        self.audio_prompt = self.audio_prompt[
+            ..., : int(prompt_duration * self.prompt_sample_rate)
+        ]
         generation = (
             self.model.generate_continuation(
                 prompt=self.audio_prompt,
                 # I bet I'll need to do some sample rate mods to pass audio w/ a different sample rate
-                prompt_sample_rate=self.model.sample_rate,
+                prompt_sample_rate=self.prompt_sample_rate,
                 descriptions=[self.text_prompt],
                 progress=True,
             )
