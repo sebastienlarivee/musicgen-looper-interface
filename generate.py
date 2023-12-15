@@ -90,6 +90,7 @@ class Generate:
         return stretched
 
     def write(self, audio, name):
+        # Converts tensors into an audio and saves it to the directory
         wav_path = self.save_path + name + ".wav"
         print(wav_path)
         sf.write(wav_path, audio, self.sample_rate)
@@ -109,27 +110,8 @@ class Generate:
         output_path = self.write(audio=wav, name=name)
         return output_path
 
-    def main_predictor(self):
+    def loop_predict(self, name):
         wav = self.predict_from_text()
-
         beats = self.estimate_beats(wav=wav)
-
-        start_time, end_time = self.get_loop_points(beats)
-
-        num_beats = len(beats[(beats[:, 0] >= start_time) & (beats[:, 0] < end_time)])
-        duration = end_time - start_time
-        actual_bpm = num_beats / duration * 60
-
-        # Handle possible octave errors
-        if abs(actual_bpm / 2 - self.bpm) <= 10:
-            actual_bpm = actual_bpm / 2
-        elif abs(actual_bpm * 2 - self.bpm) <= 10:
-            actual_bpm = actual_bpm * 2
-
-        # Prepare the main audio loop
-        start_sample = int(start_time * self.sample_rate)
-        end_sample = int(end_time * self.sample_rate)
-        loop = wav[start_sample:end_sample]
-
-        # Process the audio loop for the main output
-        stretched = pyrb.time_stretch(loop, self.sample_rate, self.bpm / actual_bpm)
+        output_path = self.write(audio=beats, name=name)
+        return output_path
