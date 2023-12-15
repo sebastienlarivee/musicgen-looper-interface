@@ -55,6 +55,7 @@ def inference_call(
         cfg_coef=guidance,
     )
 
+    prompt = prompt + f", {bpm} bpm"
     output = []
     random_string = generate_random_string()
     predict = Generate(

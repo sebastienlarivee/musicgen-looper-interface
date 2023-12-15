@@ -48,7 +48,6 @@ class Generate:
         return prediction
 
     def estimate_beats(self, wav):
-        print("Estimating beats...")
         beatnet = BeatNet(
             1,
             mode="offline",
