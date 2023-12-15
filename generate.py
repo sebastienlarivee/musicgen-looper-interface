@@ -146,7 +146,7 @@ class Generate:
         self.set_generation_params()
         prompt_duration = 3
         self.audio_prompt = self.audio_prompt[
-            ..., -int(prompt_duration * self.prompt_sample_rate)
+            ..., -int(prompt_duration * self.prompt_sample_rate) :
         ]
         generation = (
             self.model.generate_continuation(
