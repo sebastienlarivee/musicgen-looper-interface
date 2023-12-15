@@ -143,6 +143,8 @@ class Generate:
         # Generates audio from an audio prompt
         self.set_all_seeds()
         audio_prompt_duration = self.audio_prompt * self.sample_rate
+        print(f"Duration: {self.duration}")
+        print(f"Duration: {audio_prompt_duration}")
         self.duration += audio_prompt_duration  # needs to be less than 30s total
         self.set_generation_params()
         generation = self.model.generate_continuation(
