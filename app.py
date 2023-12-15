@@ -167,8 +167,8 @@ with gr.Blocks() as interface:
                 audio_outputs2 = []
                 for i in range(max_audio_outputs):
                     a = gr.Audio(type="filepath")
-                    audio_outputs.append(a)
-        variations_slider2.change(variable_outputs2, variations_slider2, audio_outputs2)
+                    audio_outputs2.append(a)
+        variations_slider2.change(variable_outputs, variations_slider2, audio_outputs2)
 
     # Settings tab
     with gr.Tab("Settings"):
