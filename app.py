@@ -47,20 +47,20 @@ def inference_call(
     # Make the output folder(s) in the user specified location (make more efficient?)
     glo.create_output_folders(save_path, output_folder_name=output_folder_name)
 
-    glo.MODEL.set_generation_params(
-        duration=max_duration,
-        top_k=250,
-        top_p=0,
-        temperature=temperature,
-        cfg_coef=guidance,
-    )
-
     prompt = prompt + f", {bpm} bpm"
     output = []
     random_string = get_random_string()
+
     predict = Generate(
-        bpm=bpm, seed=int(seed), prompt=prompt, output_format=output_format
+        bpm=bpm,
+        prompt=prompt,
+        duration=max_duration,
+        temperature=temperature,
+        cfg_coef=guidance,
+        output_format=output_format,
+        seed=int(seed),
     )
+    predict.set_generation_params()
 
     for i in range(variations):
         name = f"{random_string}_variation_{i+1:02d}"

@@ -15,19 +15,37 @@ madmom.audio.filters.np.float = float
 
 
 class Generate:
-    def __init__(self, bpm, seed, prompt, output_format):
-        self.bpm = bpm
-        self.prompt = prompt
-        self.output_format = output_format
+    def __init__(
+        self, bpm, prompt, duration, temperature, cfg_coef, output_format, seed
+    ):
+        # Global variables:
         self.save_path = glo.SAVE_PATH
         self.model = glo.MODEL
         self.sample_rate = glo.MODEL.sample_rate
+
+        # Variables passed from app.py
+        self.bpm = bpm
+        self.prompt = prompt
+        self.output_format = output_format
+        self.duration = duration
+        self.temperature = temperature
+        self.cfg_coef = cfg_coef
 
         # Gets a random seed if none is specified
         if not seed or seed == -1:
             self.seed = torch.seed() % 2**32 - 1
         else:
             self.seed = seed
+
+    def set_generation_params(self):
+        # Updates the MusicGen model parameters to user input
+        self.model.set_generation_params(
+            duration=self.duration,
+            top_k=250,
+            top_p=0,
+            temperature=self.temperature,
+            cfg_coef=self.cfg_coef,
+        )
 
     def set_all_seeds(self):
         # Sets seed for the generation
