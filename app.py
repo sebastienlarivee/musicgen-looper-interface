@@ -28,7 +28,7 @@ def inference_call(
     guidance,
     custom_model_path,
     save_path,
-    audio_prompt="",
+    audio_prompt,
 ):
     print(f"Audio prompt:{audio_prompt}")
     # Load custom model or base release
