@@ -74,9 +74,9 @@ def inference_call(
 # Handles the rendering of variable audio outputs
 def variable_outputs(k):
     k = int(k)
-    return [gr.Audio(visible=True)] * k + [gr.Audio(visible=False)] * (
-        max_audio_outputs - k
-    )
+    return [gr.Audio(type="filepath", visible=True)] * k + [
+        gr.Audio(type="filepath", visible=False)
+    ] * (max_audio_outputs - k)
 
 
 with gr.Blocks() as interface:
@@ -125,7 +125,7 @@ with gr.Blocks() as interface:
     with gr.Tab("Generate continuations"):
         with gr.Row():
             with gr.Column():
-                audio_input = gr.Audio()
+                audio_input = gr.Audio(type="filepath")
                 prompt_input2 = gr.Textbox(
                     label="Prompt",
                     placeholder="chill lofi beat, hot summer day, relaxing",
@@ -150,7 +150,7 @@ with gr.Blocks() as interface:
 
                 submit_button2 = gr.Button("Submit")
             with gr.Column():
-                audio_outputs2 = gr.Audio()
+                audio_outputs2 = gr.Audio(type="filepath")
 
     # Settings tab
     with gr.Tab("Settings"):
