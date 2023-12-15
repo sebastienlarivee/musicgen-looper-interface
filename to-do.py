@@ -7,9 +7,11 @@ import that_dawg
 ### Model loading DONE
 ### Folder creation DONE
 ### Basic inference DONE
-### Beat counting + trimming
+### Beat counting + trimming DONE
 ### Beat synced continuation
-
+### Bar counting logic
+### Changelog file
+### Folders based on generation type
 
 # Flow thoughts:
 

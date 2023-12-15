@@ -38,19 +38,6 @@ class Generate:
         torch.cuda.manual_seed(self.seed)
         torch.backends.cudnn.deterministic = True
 
-    def predict_from_text(self):
-        # Generates audio from a text prompt
-        self.set_all_seeds()
-
-        print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
-
-        prediction = (
-            self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
-        )
-        prediction = prediction / np.abs(prediction).max()
-        self.seed += 1
-        return prediction
-
     def estimate_beats(self, wav):
         # Maps out the beats
         beatnet = BeatNet(
@@ -98,7 +85,7 @@ class Generate:
         return stretched
 
     def write(self, audio, name):
-        # Converts tensors into an audio files and saves it to the directory
+        # Save's as file type given by user
         wav_path = self.save_path + name + ".wav"
         print(wav_path)
         sf.write(wav_path, audio, self.sample_rate)
@@ -113,9 +100,40 @@ class Generate:
             path = wav_path
         return path
 
+    def predict_from_text(self):
+        # Generates audio from a text prompt
+        self.set_all_seeds()
+
+        print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
+
+        prediction = (
+            self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
+        )
+        prediction = prediction / np.abs(prediction).max()
+        return prediction
+
+    def predict_from_audio(self):
+        # Generates audio from an audio prompt
+        prediction = self.model.generate_continuation(
+            prompt=self.audio_prompt,
+            # I bet I'll need to do some sample rate mods to pass audio w/ a different sample rate
+            prompt_sample_rate=self.model.sample_rate,
+            # Ok sick there's text conditioning on audio prompts!!
+            descriptions=[self.prompt],
+            progress=True,
+        )
+        return prediction
+
     def simple_predict(self, name):
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
+        self.seed += 1
+        return output_path
+
+    def simple_predict_from_audio(self, name):
+        wav = self.predict_from_audio()
+        output_path = self.write(audio=wav, name=name)
+        self.seed += 1
         return output_path
 
     def loop_predict(self, name):
@@ -123,4 +141,5 @@ class Generate:
         beats = self.estimate_beats(wav=wav)
         loop = self.get_loop_points(beats=beats, wav=wav)
         output_path = self.write(audio=loop, name=name)
+        self.seed += 1
         return output_path
