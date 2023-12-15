@@ -126,11 +126,11 @@ with gr.Blocks() as interface:
     with gr.Tab("Generate continuations"):
         with gr.Row():
             with gr.Column():
+                audio_input = gr.Audio()
                 prompt_input2 = gr.Textbox(
                     label="Prompt",
                     placeholder="chill lofi beat, hot summer day, relaxing",
                 )
-                audio_input = gr.Audio()
 
                 with gr.Row():
                     bpm_slider2 = gr.Slider(
