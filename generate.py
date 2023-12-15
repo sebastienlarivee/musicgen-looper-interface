@@ -17,7 +17,7 @@ madmom.audio.filters.np.float = float
 class Generate:
     def __init__(self, bpm, seed, prompt, output_format):
         self.bpm = bpm
-        self.prompt = prompt  # + f", {bpm} bpm"
+        self.prompt = prompt
         self.output_format = output_format
         self.save_path = glo.SAVE_PATH
         self.model = glo.MODEL
@@ -60,7 +60,6 @@ class Generate:
         beatnet_input = librosa.resample(
             wav, orig_sr=self.sample_rate, target_sr=beatnet.sample_rate
         )
-        print(beatnet.sample_rate)
         beats = beatnet.process(beatnet_input)
         downbeat_times = beats[:, 0][beats[:, 1] == 1]
         num_bars = len(downbeat_times) - 1
