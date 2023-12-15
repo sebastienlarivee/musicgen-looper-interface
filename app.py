@@ -217,7 +217,7 @@ with gr.Blocks() as interface:
             custom_model_path,
             save_path_input,
         ],
-        outputs=audio_outputs,
+        outputs=audio_outputs2,
     )
 
 
