@@ -141,11 +141,13 @@ class Generate:
 
     def generate_from_audio(self):
         # Generates audio from an audio prompt
+        self.set_all_seeds
+        audio_prompt_duration = self.audio_prompt * self.sample_rate
+        self.duration += audio_prompt_duration  # needs to be less than 30s total
         generation = self.model.generate_continuation(
             prompt=self.audio_prompt,
             # I bet I'll need to do some sample rate mods to pass audio w/ a different sample rate
             prompt_sample_rate=self.model.sample_rate,
-            # Ok sick there's text conditioning on audio prompts!! to do: build song structure prompt interface
             descriptions=[self.prompt],
             progress=True,
         )
@@ -154,13 +156,13 @@ class Generate:
     def simple_generate_from_text(self, name):
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
-        self.seed += 1
+        self.seed += 1  # For batch generation
         return output_path
 
     def simple_generate_from_audio(self, name):
         wav = self.generate_from_audio()
         output_path = self.write(audio=wav, name=name)
-        self.seed += 1
+        self.seed += 1  # For batch generation
         return output_path
 
     def loop_generate_from_text(self, name):
@@ -168,5 +170,5 @@ class Generate:
         beats = self.estimate_beats(wav=wav)
         loop = self.get_loop_points(beats=beats, wav=wav)
         output_path = self.write(audio=loop, name=name)
-        self.seed += 1
+        self.seed += 1  # For batch generation
         return output_path
