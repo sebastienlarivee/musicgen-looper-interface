@@ -65,8 +65,8 @@ def inference_call(
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
     print(output)
-    print(output[1])
-    return output
+    print(output[0])
+    return output[0]
 
 
 # GRADIO INTERFACE
