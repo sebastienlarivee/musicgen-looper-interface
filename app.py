@@ -30,6 +30,7 @@ def inference_call(
     save_path,
     audio_prompt="",
 ):
+    print(f"Audio prompt:{audio_prompt}")
     # Load custom model or base release
     if model_version == "custom model":
         # Need to test if download links work for this:
@@ -43,7 +44,6 @@ def inference_call(
     prompt = prompt + f", {bpm} bpm"
     output = []
     random_string = get_random_string()
-    print(audio_prompt)
 
     # Pass parameters from the gradio interface to the generation code
     predict = Generate(
