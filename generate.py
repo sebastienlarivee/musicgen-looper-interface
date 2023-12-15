@@ -131,24 +131,25 @@ class Generate:
         # Generates audio from a text prompt
         self.set_all_seeds()
 
-        print(f"Generating -> prompt: {self.prompt}, seed: {self.seed}")
+        print(f"Generating -> prompt: {self.text_prompt}, seed: {self.seed}")
 
         generation = (
-            self.model.generate([self.prompt], progress=True).cpu().numpy()[0, 0]
+            self.model.generate([self.text_prompt], progress=True).cpu().numpy()[0, 0]
         )
         generation = generation / np.abs(generation).max()
         return generation
 
     def generate_from_audio(self):
         # Generates audio from an audio prompt
-        self.set_all_seeds
+        self.set_all_seeds()
         audio_prompt_duration = self.audio_prompt * self.sample_rate
         self.duration += audio_prompt_duration  # needs to be less than 30s total
+        self.set_generation_params()
         generation = self.model.generate_continuation(
             prompt=self.audio_prompt,
             # I bet I'll need to do some sample rate mods to pass audio w/ a different sample rate
             prompt_sample_rate=self.model.sample_rate,
-            descriptions=[self.prompt],
+            descriptions=[self.text_prompt],
             progress=True,
         )
         return generation

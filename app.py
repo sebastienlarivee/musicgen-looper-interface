@@ -28,7 +28,7 @@ def inference_call(
     guidance,
     custom_model_path,
     save_path,
-    audio_prompt,
+    audio_prompt="",
 ):
     # Load custom model or base release
     if model_version == "custom model":
@@ -59,14 +59,12 @@ def inference_call(
 
     for i in range(variations):
         name = f"{random_string}_variation_{i+1:02d}"
-        output.append(predict.loop_generate_from_text(name=name))
+        output.append(predict.simple_generate_from_audio(name=name))
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
 
-    # print(f"Padded: {padded_output}")
-
-    return padded_output
+    return output
 
 
 # GRADIO INTERFACE
