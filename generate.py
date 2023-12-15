@@ -36,7 +36,7 @@ class Generate:
         self.text_prompt = text_prompt
         self.audio_prompt = audio_prompt
         self.output_format = output_format
-        self.duration = duration
+        self.duration = float(duration)
         self.temperature = temperature
         self.cfg_coef = cfg_coef
 
@@ -145,14 +145,18 @@ class Generate:
         audio_prompt_duration = self.audio_prompt * self.sample_rate
         print(f"Duration: {self.duration}")
         print(f"Duration: {audio_prompt_duration}")
-        self.duration += audio_prompt_duration  # needs to be less than 30s total
+        # self.duration += audio_prompt_duration  # needs to be less than 30s total
         self.set_generation_params()
-        generation = self.model.generate_continuation(
-            prompt=self.audio_prompt,
-            # I bet I'll need to do some sample rate mods to pass audio w/ a different sample rate
-            prompt_sample_rate=self.model.sample_rate,
-            descriptions=[self.text_prompt],
-            progress=True,
+        generation = (
+            self.model.generate_continuation(
+                prompt=self.audio_prompt,
+                # I bet I'll need to do some sample rate mods to pass audio w/ a different sample rate
+                prompt_sample_rate=self.model.sample_rate,
+                descriptions=[self.text_prompt],
+                progress=True,
+            )
+            .cpu()
+            .numpy()[0, 0]
         )
         return generation
 
