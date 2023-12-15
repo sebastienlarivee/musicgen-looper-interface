@@ -28,7 +28,7 @@ def inference_call(
     guidance,
     custom_model_path,
     save_path,
-    audio_prompt,
+    audio_prompt="",
 ):
     print(f"Audio prompt:{audio_prompt}")
     # Load custom model or base release
@@ -64,7 +64,8 @@ def inference_call(
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
-
+    print(output)
+    print(output[1])
     return output
 
 
