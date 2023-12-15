@@ -61,6 +61,7 @@ class Generate:
         beatnet_input = librosa.resample(
             wav, orig_sr=self.sample_rate, target_sr=beatnet.sample_rate
         )
+        print(beatnet.sample_rate)
         beats = beatnet.process(beatnet_input)
         downbeat_times = beats[:, 0][beats[:, 1] == 1]
         num_bars = len(downbeat_times) - 1
