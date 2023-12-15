@@ -67,7 +67,7 @@ class Generate:
         )
         return beatnet.process(beatnet_input)
 
-    def get_loop_points(beats):
+    def get_loop_points(self, beats):
         # Trims + stretches the audio to match user BPM as a seamless loop
         downbeat_times = beats[:, 0][beats[:, 1] == 1]
         num_bars = len(downbeat_times) - 1
