@@ -64,9 +64,8 @@ def inference_call(
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
-    print(output)
-    print(output[0])
-    return output[0]
+
+    return padded_output
 
 
 # GRADIO INTERFACE
@@ -74,6 +73,13 @@ def inference_call(
 
 # Handles the rendering of variable audio outputs
 def variable_outputs(k):
+    k = int(k)
+    return [gr.Audio(type="filepath", visible=True)] * k + [
+        gr.Audio(type="filepath", visible=False)
+    ] * (max_audio_outputs - k)
+
+
+def variable_outputs2(k):
     k = int(k)
     return [gr.Audio(type="filepath", visible=True)] * k + [
         gr.Audio(type="filepath", visible=False)
@@ -162,7 +168,7 @@ with gr.Blocks() as interface:
                 for i in range(max_audio_outputs):
                     a = gr.Audio(type="filepath")
                     audio_outputs.append(a)
-        variations_slider2.change(variable_outputs, variations_slider2, audio_outputs2)
+        variations_slider2.change(variable_outputs2, variations_slider2, audio_outputs2)
 
     # Settings tab
     with gr.Tab("Settings"):
