@@ -190,7 +190,9 @@ class Generate:
         prompt_beats = 4  # placeholder, make variable?
         prompt_duration = (60 / self.bpm) * prompt_beats
         print(f"prompt_duration: {prompt_duration}")
-        self.duration = prompt_duration + self.audio_prompt / self.prompt_sample_rate
+        self.duration = (
+            prompt_duration + self.audio_prompt.size(1) / self.prompt_sample_rate
+        )
         print(f"self.durations: {self.duration}")
         beat_prompt = self.audio_prompt[
             ..., -int(prompt_duration * self.prompt_sample_rate) :
