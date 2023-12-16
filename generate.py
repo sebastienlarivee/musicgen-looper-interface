@@ -189,11 +189,11 @@ class Generate:
         # Generate seamless loops from an audio prompt (prompt must be a loop)
         prompt_beats = 4  # placeholder, make variable?
         prompt_duration = (60 / self.bpm) * prompt_beats
+        input_audio_duration = self.audio_prompt.size(1) / self.prompt_sample_rate
         print(f"prompt_duration: {prompt_duration}")
-        self.duration = (
-            prompt_duration + self.audio_prompt.size(1) / self.prompt_sample_rate
-        )
-        print(f"self.durations: {self.duration}")
+        print(f"input_audio_duration: {input_audio_duration}")
+
+        self.duration = prompt_duration + input_audio_duration
         beat_prompt = self.audio_prompt[
             ..., -int(prompt_duration * self.prompt_sample_rate) :
         ]
