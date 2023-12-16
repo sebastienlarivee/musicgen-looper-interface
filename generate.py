@@ -198,7 +198,7 @@ class Generate:
 
         self.set_generation_params()
         wav = self.generate_from_audio(
-            prompt=beat_prompt, start_indice=prompt_beats * self.prompt_sample_rate
+            prompt=beat_prompt, start_indice=int(prompt_beats * self.prompt_sample_rate)
         )
 
         start_sample = 0
