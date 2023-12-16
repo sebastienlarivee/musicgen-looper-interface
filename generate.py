@@ -140,8 +140,11 @@ class Generate:
         generation = generation / np.abs(generation).max()
         return generation
 
-    def generate_from_audio(self, prompt, start_indice=None):
+    def generate_from_audio(self, prompt=None, start_indice=None):
         # Generates audio from an audio prompt
+        if prompt == None:
+            prompt = self.audio_prompt
+
         self.set_all_seeds()
         generation = (
             self.model.generate_continuation(
@@ -185,7 +188,7 @@ class Generate:
         return output_path
 
     def loop_generate_from_audio(self, name):
-        # Generate seamless loops from an audio prompt (prompt must be a loop)
+        # Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
         prompt_beats = 4  # placeholder, make variable?
         prompt_duration = (60 / self.bpm) * prompt_beats
         input_loop_duration = self.audio_prompt.size(1) / self.prompt_sample_rate
@@ -203,6 +206,7 @@ class Generate:
         )
         print("GEN COMPLETE!")
         output_path = self.write(audio=wav, name=name)
+        self.seed += 1
         return output_path
 
         start_sample = 0
