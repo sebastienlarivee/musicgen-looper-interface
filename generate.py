@@ -211,6 +211,9 @@ class Generate:
         # SOMETHING IS NOT RIGHT HERE
         start_indice = prompt.size(1)
         end_indice = self.audio_prompt.size(1)
+        print(
+            f"start_indice: {start_indice}, end_indice: {end_indice}, total second: {start_indice+end_indice*self.prompt_sample_rate}"
+        )
 
         wav = self.generate_from_audio(
             prompt=prompt,
