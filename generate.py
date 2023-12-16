@@ -171,7 +171,7 @@ class Generate:
             ..., -int(prompt_duration * self.prompt_sample_rate) :
         ]
 
-        wav = self.generate_from_audio()
+        wav = self.generate_from_audio(prompt=self.audio_prompt)
         output_path = self.write(audio=wav, name=name)
         self.seed += 1  # For batch generation
         return output_path
