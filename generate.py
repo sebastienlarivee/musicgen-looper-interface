@@ -198,14 +198,14 @@ class Generate:
         # start_indice = int(prompt_duration * self.prompt_sample_rate)
         self.duration = prompt_seconds + input_loop_seconds + 0.1
 
-        print(f"self.duration: {self.duration}")
-
         prompt = self.audio_prompt[
             ..., -int(prompt_seconds * self.prompt_sample_rate) :
         ]
 
         # Need to reset gen params as we changed duration
         self.set_generation_params()
+        print(f"self.duration: {self.duration}")
+        print(f"input_loop_seconds: {input_loop_seconds}")
 
         # Slice generated audio from the end of the prompt to the length of the original loop
         # SOMETHING IS NOT RIGHT HERE
