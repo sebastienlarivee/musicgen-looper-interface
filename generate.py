@@ -140,7 +140,7 @@ class Generate:
         generation = generation / np.abs(generation).max()
         return generation
 
-    def generate_from_audio(self, prompt=None, start_indice=None):
+    def generate_from_audio(self, prompt=None, start_indice=None, end_indice=None):
         # Generates audio from an audio prompt
         if prompt == None:
             prompt = self.audio_prompt
@@ -154,7 +154,7 @@ class Generate:
                 progress=True,
             )
             .cpu()
-            .numpy()[0, 0, start_indice:]
+            .numpy()[0, 0, start_indice:end_indice]
             # ^ Optional parameter to slice off the input audio
         )
         return generation
@@ -192,20 +192,26 @@ class Generate:
 
     def loop_generate_from_audio(self, name):
         # GRADIO ENDPOINT: Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
-        prompt_beats = 4  # placeholder, make variable?
+        prompt_beats = 4  # placeholder, make it a parameter?
         prompt_duration = (60 / self.bpm) * prompt_beats
         input_loop_duration = self.audio_prompt.size(1) / self.prompt_sample_rate
         # start_indice = int(prompt_duration * self.prompt_sample_rate)
-        self.duration = prompt_duration + input_loop_duration
+        self.duration = prompt_duration + input_loop_duration + 0.1
 
         beat_prompt = self.audio_prompt[
             ..., -int(prompt_duration * self.prompt_sample_rate) :
         ]
 
+        # Need to reset gen params as we dynamically set input/output length
         self.set_generation_params()
+
+        start_indice = beat_prompt.size(1)
+        end_indice = self.audio_prompt.size(1)
+
         wav = self.generate_from_audio(
             prompt=beat_prompt,
-            start_indice=beat_prompt.size(1),
+            start_indice=start_indice,
+            end_indice=end_indice,
         )
         print("GEN COMPLETE!")
         output_path = self.write(audio=wav, name=name)
