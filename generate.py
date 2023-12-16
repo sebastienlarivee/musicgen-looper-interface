@@ -193,11 +193,10 @@ class Generate:
         beat_prompt = self.audio_prompt[
             ..., -int(prompt_duration * self.prompt_sample_rate) :
         ]
-        wav = self.generate_from_audio(promt=beat_prompt)
-        start_sample = prompt_duration
+        wav = self.generate_from_audio(prompt=beat_prompt)
         num_lead = 100  # for blending to avoid clicks
-        lead_start = start_sample - num_lead
-        lead = self.audio_prompt[lead_start:start_sample]
+        lead_start = prompt_duration - num_lead
+        lead = self.audio_prompt[lead_start:prompt_duration]
         num_lead = len(lead)
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
         wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
