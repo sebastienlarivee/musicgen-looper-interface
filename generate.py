@@ -157,12 +157,14 @@ class Generate:
         return generation
 
     def simple_generate_from_text(self, name):
+        # Generate audio from text
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
         self.seed += 1  # For batch generation
         return output_path
 
     def simple_generate_from_audio(self, name):
+        # Generate audio from audio
         prompt_duration = 3  # Placeholder value for testing
 
         self.audio_prompt = self.audio_prompt[
@@ -175,6 +177,7 @@ class Generate:
         return output_path
 
     def loop_generate_from_text(self, name):
+        # Generate seamless loops from a text prompt
         wav = self.generate_from_text()
         beats = self.estimate_beats(wav=wav)
         loop = self.get_loop_points(beats=beats, wav=wav)
@@ -183,10 +186,21 @@ class Generate:
         return output_path
 
     def loop_generate_from_audio(self, name):
+        # Generate seamless loops from an audio prompt (prompt must be a loop)
         prompt_beats = 4  # placeholder, make variable?
         prompt_duration = (60 / self.bpm) * prompt_beats
         self.duration = prompt_duration + self.audio_prompt * self.prompt_sample_rate
-        self.set_generation_params()
         self.audio_prompt = self.audio_prompt[
             ..., -int(prompt_duration * self.prompt_sample_rate) :
         ]
+        wav = self.generate_from_audio()
+        start_sample = prompt_duration
+        num_lead = 100  # for blending to avoid clicks
+        lead_start = start_sample - num_lead
+        lead = self.audio_prompt[lead_start:start_sample]
+        num_lead = len(lead)
+        wav[-num_lead:] *= np.linspace(1, 0, num_lead)
+        wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
+
+        output_path = self.write(audio=wav, name=name)
+        return output_path
