@@ -155,6 +155,7 @@ class Generate:
             )
             .cpu()
             .numpy()[0, 0, start_indice:]
+            # ^ Optional parameter to slice off the input audio
         )
         return generation
 
