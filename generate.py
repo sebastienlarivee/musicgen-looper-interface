@@ -159,15 +159,17 @@ class Generate:
         )
         return generation
 
+    # GRADIO ENDPOINTS TO CALL THROUGH THE INTERFACE
+
     def simple_generate_from_text(self, name):
-        # Generate audio from text
+        # GRADIO ENDPOINT: Generate audio from text
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
         self.seed += 1  # For batch generation
         return output_path
 
     def simple_generate_from_audio(self, name):
-        # Generate audio from audio
+        # GRADIO ENDPOINT: Generate audio from audio
         prompt_duration = 3  # Placeholder value for testing
 
         self.audio_prompt = self.audio_prompt[
@@ -180,7 +182,7 @@ class Generate:
         return output_path
 
     def loop_generate_from_text(self, name):
-        # Generate seamless loops from a text prompt
+        # GRADIO ENDPOINT: Generate seamless loops from a text prompt
         wav = self.generate_from_text()
         beats = self.estimate_beats(wav=wav)
         loop = self.get_loop_points(beats=beats, wav=wav)
@@ -189,7 +191,7 @@ class Generate:
         return output_path
 
     def loop_generate_from_audio(self, name):
-        # Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
+        # GRADIO ENDPOINT: Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
         prompt_beats = 4  # placeholder, make variable?
         prompt_duration = (60 / self.bpm) * prompt_beats
         input_loop_duration = self.audio_prompt.size(1) / self.prompt_sample_rate
