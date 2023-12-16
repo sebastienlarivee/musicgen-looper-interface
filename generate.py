@@ -202,6 +202,8 @@ class Generate:
             start_indice=start_indice,
         )
         print("GEN COMPLETE!")
+        output_path = self.write(audio=wav, name=name)
+        return output_path
 
         start_sample = 0
         num_lead = 100  # for blending to avoid clicks
