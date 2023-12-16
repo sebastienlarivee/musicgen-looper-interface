@@ -193,23 +193,23 @@ class Generate:
     def loop_generate_from_audio(self, name):
         # GRADIO ENDPOINT: Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
         prompt_beats = 4  # placeholder, make it a parameter?
-        prompt_duration = (60 / self.bpm) * prompt_beats
-        input_loop_duration = self.audio_prompt.size(1) / self.prompt_sample_rate
+        prompt_seconds = (60 / self.bpm) * prompt_beats
+        input_loop_seconds = self.audio_prompt.size(1) / self.prompt_sample_rate
         # start_indice = int(prompt_duration * self.prompt_sample_rate)
-        self.duration = prompt_duration + input_loop_duration + 0.1
+        self.duration = prompt_seconds + input_loop_seconds + 0.1
 
-        beat_prompt = self.audio_prompt[
-            ..., -int(prompt_duration * self.prompt_sample_rate) :
+        prompt = self.audio_prompt[
+            ..., -int(prompt_seconds * self.prompt_sample_rate) :
         ]
 
         # Need to reset gen params as we dynamically set input/output length
         self.set_generation_params()
 
-        start_indice = beat_prompt.size(1)
+        start_indice = prompt.size(1)
         end_indice = self.audio_prompt.size(1)
 
         wav = self.generate_from_audio(
-            prompt=beat_prompt,
+            prompt=prompt,
             start_indice=start_indice,
             end_indice=end_indice,
         )
