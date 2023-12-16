@@ -193,7 +193,7 @@ class Generate:
         prompt_beats = 4  # placeholder, make variable?
         prompt_duration = (60 / self.bpm) * prompt_beats
         input_loop_duration = self.audio_prompt.size(1) / self.prompt_sample_rate
-        start_indice = int(prompt_duration * self.prompt_sample_rate)
+        # start_indice = int(prompt_duration * self.prompt_sample_rate)
         self.duration = prompt_duration + input_loop_duration
 
         beat_prompt = self.audio_prompt[
@@ -203,7 +203,7 @@ class Generate:
         self.set_generation_params()
         wav = self.generate_from_audio(
             prompt=beat_prompt,
-            start_indice=start_indice,
+            start_indice=beat_prompt.size(1),
         )
         print("GEN COMPLETE!")
         output_path = self.write(audio=wav, name=name)
