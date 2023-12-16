@@ -140,13 +140,13 @@ class Generate:
         generation = generation / np.abs(generation).max()
         return generation
 
-    def generate_from_audio(self):
+    def generate_from_audio(self, prompt):
         # Generates audio from an audio prompt
         self.set_all_seeds()
         self.set_generation_params()
         generation = (
             self.model.generate_continuation(
-                prompt=self.audio_prompt,
+                prompt=prompt,
                 prompt_sample_rate=self.prompt_sample_rate,
                 descriptions=[self.text_prompt],
                 progress=True,
@@ -190,10 +190,10 @@ class Generate:
         prompt_beats = 4  # placeholder, make variable?
         prompt_duration = (60 / self.bpm) * prompt_beats
         self.duration = prompt_duration + self.audio_prompt * self.prompt_sample_rate
-        self.audio_prompt = self.audio_prompt[
+        beat_prompt = self.audio_prompt[
             ..., -int(prompt_duration * self.prompt_sample_rate) :
         ]
-        wav = self.generate_from_audio()
+        wav = self.generate_from_audio(promt=beat_prompt)
         start_sample = prompt_duration
         num_lead = 100  # for blending to avoid clicks
         lead_start = start_sample - num_lead
