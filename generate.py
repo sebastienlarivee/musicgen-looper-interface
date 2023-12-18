@@ -220,18 +220,14 @@ class Generate:
             start_indice=start_indice,
             end_indice=end_indice,
         )
-        print(f"wav: {wav}")
         print("GEN COMPLETE!")
 
         # I think my blending setup will have to be different than Jansson's
-        self.write(audio=wav, name=f"{name}_pre_lead")
-        num_lead = 100
+        num_lead = 64000
         lead = sf.read(self.audio_prompt_wav, frames=num_lead)
         lead = lead[0]
-        print(f"lead: {lead}")
-        self.write(audio=lead, name="lead")
+        output_path = self.write(audio=wav, name=f"{name}_lead")
         num_lead = len(lead)
-        print(f"num_lead: {num_lead}")
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
         wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
 
