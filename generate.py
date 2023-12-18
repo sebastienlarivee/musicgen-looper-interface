@@ -224,7 +224,7 @@ class Generate:
 
         # I think my blending setup will have to be different than Jansson's
         num_lead = 64000
-        lead = sf.read(self.audio_prompt_wav, frames=num_lead)
+        lead = sf.read(self.audio_prompt_wav, start=-num_lead)
         lead = lead[0]
         output_path = self.write(audio=lead, name=f"{name}_lead")
         num_lead = len(lead)
