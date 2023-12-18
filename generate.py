@@ -161,17 +161,19 @@ class Generate:
         )
         return generation
 
-    # GRADIO ENDPOINTS TO CALL THROUGH THE INTERFACE
+    ################################################
+    # ENDPOINTS TO CALL THROUGH THE GRADIO INTERFACE
+    ################################################
 
     def simple_generate_from_text(self, name):
-        # GRADIO ENDPOINT: Generate audio from text
+        # ENDPOINT: Generate audio from a text prompt
         wav = self.predict_from_text()
         output_path = self.write(audio=wav, name=name)
         self.seed += 1  # For batch generation
         return output_path
 
     def simple_generate_from_audio(self, name):
-        # GRADIO ENDPOINT: Generate audio from audio
+        # ENDPOINT: Generate audio from an audio prompt
         prompt_duration = 3  # Placeholder value for testing
 
         self.audio_prompt = self.audio_prompt[
@@ -184,7 +186,7 @@ class Generate:
         return output_path
 
     def loop_generate_from_text(self, name):
-        # GRADIO ENDPOINT: Generate seamless loops from a text prompt
+        # ENDPOINT: Generate seamless loops from a text prompt
         wav = self.generate_from_text()
         beats = self.estimate_beats(wav=wav)
         loop = self.get_loop_points(beats=beats, wav=wav)
@@ -193,10 +195,10 @@ class Generate:
         return output_path
 
     def loop_generate_from_audio(self, name):
-        # GRADIO ENDPOINT: Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
+        # ENDPOINT: Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
 
         # Select last 4 beats of input audio for use as audio prompt
-        prompt_beats = 4  # placeholder, make it a parameter?
+        prompt_beats = 4  # Placeholder, make it a parameter?
         prompt_seconds = (60 / self.bpm) * prompt_beats
         prompt = self.audio_prompt[
             ..., -int(prompt_seconds * self.prompt_sample_rate) :
@@ -206,30 +208,19 @@ class Generate:
         original_loop_seconds = self.audio_prompt.size(1) / self.prompt_sample_rate
         self.duration = prompt_seconds + original_loop_seconds + 0.1
         self.set_generation_params()
-        # Prints to delete
-        print(f"self.duration: {self.duration}")
-        print(f"original_loop_seconds: {original_loop_seconds}")
-        print(
-            f"self.model_sample_rate: {self.model_sample_rate} self.prompt_sample_rate: {self.prompt_sample_rate}"
-        )
 
         # Slice generated audio from the end of the prompt to the length of the original loop
-        # SOMETHING IS NOT RIGHT HERE
         start_indice = int(prompt_seconds * self.model_sample_rate)
         end_indice = int(start_indice + original_loop_seconds * self.model_sample_rate)
-        print(
-            f"start_indice: {start_indice}, end_indice: {end_indice}, total samples: {end_indice-start_indice}, total output seconds: {(end_indice-start_indice)/self.model_sample_rate}"
-        )
 
+        # Generate
         wav = self.generate_from_audio(
             prompt=prompt,
             start_indice=start_indice,
             end_indice=end_indice,
         )
+
         print("GEN COMPLETE!")
-        output_path = self.write(audio=wav, name=name)
-        self.seed += 1
-        return output_path
 
         start_sample = 0
         num_lead = 100  # for blending to avoid clicks
@@ -240,4 +231,5 @@ class Generate:
         wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
 
         output_path = self.write(audio=wav, name=name)
+        self.seed += 1
         return output_path
