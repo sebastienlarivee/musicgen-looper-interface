@@ -228,6 +228,8 @@ class Generate:
         num_lead = 100
         lead = sf.read(self.audio_prompt_wav, frames=num_lead)
         print(f"lead: {lead}")
+        print(f"lead[0]: {lead[0]}")
+        print(f"lead[1]: {lead[1]}")
         # self.write(audio=lead, name="lead")
         num_lead = len(lead)
         print(f"num_lead: {num_lead}")
