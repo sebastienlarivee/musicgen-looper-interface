@@ -24,7 +24,6 @@ def model_loader(model, model_path):
         glo.load_model(f"facebook/musicgen-{model}")
 
 
-# Convert this to a class for better reusability (need to see if that's ok with gradio)
 def new_loops_from_text(
     model_version: str,
     custom_model_path: str,
