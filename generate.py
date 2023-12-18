@@ -226,7 +226,7 @@ class Generate:
         num_lead = 64000
         lead = sf.read(self.audio_prompt_wav, start=-num_lead)
         lead = lead[0]
-        output_path = self.write(audio=lead, name=f"{name}_lead")
+        # self.write(audio=lead, name=f"{name}_lead")
         num_lead = len(lead)
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
         wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
