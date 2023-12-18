@@ -59,8 +59,8 @@ def new_loops_from_text(
     predict.set_generation_params()
 
     for i in range(batch_size):
-        name = f"{random_string}_variation_{i+1:02d}"
-        output.append(predict.loop_generate_from_audio(name=name))
+        name = f"{random_string}_generation_{i+1:02d}"
+        output.append(predict.loop_generate_from_text(name=name))
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
@@ -219,7 +219,6 @@ with gr.Blocks() as interface:
             temperature_slider2,
             max_duration_slider2,
             model_version_toggle,
-            output_format_toggle,
             guidance_slider2,
             custom_model_path,
             save_path_input,
