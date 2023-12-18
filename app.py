@@ -168,7 +168,7 @@ with gr.Blocks() as interface:
     with gr.Tab("Settings"):
         with gr.Column():
             with gr.Row():
-                model_version_toggle = gr.Radio(
+                model_toggle_set = gr.Radio(
                     choices=[
                         "small",
                         "medium",
@@ -181,22 +181,22 @@ with gr.Blocks() as interface:
                     value="stereo-small",
                     label="Model Version",
                 )
-                custom_model_path = gr.Textbox(
+                model_path_set = gr.Textbox(
                     label="Custom Model Path",
                     placeholder="File path to your model",
                 )
         with gr.Column():
             with gr.Row():
-                save_path_input = gr.Textbox(
+                save_path_set = gr.Textbox(
                     value="/content/musicgen-looper-interface", label="Save Path"
                 )
     # Action handlers (NEED TO CLEAN THESE UP FOR NEXT RELEASE)
     submit_button_gen.click(
         fn=new_loops_from_text,
         inputs=[
-            model_version_toggle,
-            custom_model_path,
-            save_path_input,
+            model_toggle_set,
+            model_path_set,
+            save_path_set,
             batch_slider_gen,
             bpm_slider_gen,
             text_prompt_gen,
@@ -206,24 +206,6 @@ with gr.Blocks() as interface:
             seed_input_gen,
         ],
         outputs=audio_outputs_gen,
-    )
-
-    submit_button2.click(
-        fn=inference_call,
-        inputs=[
-            bpm_slider2,
-            seed_input2,
-            prompt_input2,
-            variations_slider2,
-            temperature_slider2,
-            max_duration_slider2,
-            model_version_toggle,
-            guidance_slider2,
-            custom_model_path,
-            save_path_input,
-            audio_input,
-        ],
-        outputs=audio_outputs2,
     )
 
 
