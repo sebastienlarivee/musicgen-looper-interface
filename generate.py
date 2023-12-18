@@ -227,10 +227,9 @@ class Generate:
         self.write(audio=wav, name=f"{name}_pre_lead")
         num_lead = 100
         lead = sf.read(self.audio_prompt_wav, frames=num_lead)
+        lead = lead[0]
         print(f"lead: {lead}")
-        print(f"lead[0]: {lead[0]}")
-        print(f"lead[1]: {lead[1]}")
-        # self.write(audio=lead, name="lead")
+        self.write(audio=lead, name="lead")
         num_lead = len(lead)
         print(f"num_lead: {num_lead}")
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
