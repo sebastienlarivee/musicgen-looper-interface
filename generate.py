@@ -217,7 +217,7 @@ class Generate:
         # Generate
         wav = self.generate_from_audio(
             prompt=prompt,
-            start_indice=start_indice,
+            start_indice=0,
             end_indice=end_indice,
         )
         print("GEN COMPLETE!")
