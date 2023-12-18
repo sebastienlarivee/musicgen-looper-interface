@@ -217,16 +217,15 @@ class Generate:
         # Generate
         wav = self.generate_from_audio(
             prompt=prompt,
-            start_indice=0,
+            start_indice=start_indice,
             end_indice=end_indice,
         )
         print("GEN COMPLETE!")
 
         # Blending
-        num_lead = 64000
+        num_lead = 1000
         lead = sf.read(self.audio_prompt_wav, start=-num_lead)
         lead = lead[0]
-        # self.write(audio=lead, name=f"{name}_lead")
         num_lead = len(lead)
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
         wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
