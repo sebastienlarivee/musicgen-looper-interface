@@ -11,8 +11,8 @@ output_folder_name = "Outputs"
 
 
 def get_random_string(length=5):
-    random_str = str(uuid.uuid4()).replace("-", "")[:length]
-    return random_str
+    random_string = str(uuid.uuid4()).replace("-", "")[:length]
+    return random_string
 
 
 def model_loader(model, model_path):
@@ -25,7 +25,7 @@ def model_loader(model, model_path):
 
 
 # Convert this to a class for better reusability (need to see if that's ok with gradio)
-def inference_call(
+def new_loop_from_text(
     bpm,
     seed,
     prompt,
@@ -57,7 +57,7 @@ def inference_call(
         temperature=temperature,
         cfg_coef=guidance,
         output_format=output_format,
-        seed=int(seed),
+        seed=seed,
     )
     predict.set_generation_params()
 
