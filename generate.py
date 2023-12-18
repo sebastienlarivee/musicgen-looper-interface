@@ -214,10 +214,10 @@ class Generate:
 
         # Slice generated audio from the end of the prompt to the length of the original loop
         # SOMETHING IS NOT RIGHT HERE
-        start_indice = prompt.size(1)
-        end_indice = self.audio_prompt.size(1)
+        start_indice = input_loop_seconds * self.model_sample_rate
+        end_indice = (prompt_seconds + input_loop_seconds) * self.model_sample_rate
         print(
-            f"start_indice: {start_indice}, end_indice: {end_indice}, total second: {start_indice+end_indice*self.prompt_sample_rate}"
+            f"start_indice: {start_indice}, end_indice: {end_indice}, total second: {(end_indice-start_indice)*self.prompt_sample_rate}"
         )
 
         wav = self.generate_from_audio(
