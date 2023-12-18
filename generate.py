@@ -30,7 +30,7 @@ class Generate:
         # Global variables:
         self.save_path = glo.SAVE_PATH
         self.model = glo.MODEL
-        self.sample_rate = glo.MODEL.sample_rate
+        self.model_sample_rate = glo.MODEL.sample_rate
 
         # Variables passed from app.py
         self.bpm = bpm
@@ -78,7 +78,7 @@ class Generate:
         )
 
         beatnet_input = librosa.resample(
-            wav, orig_sr=self.sample_rate, target_sr=beatnet.sample_rate
+            wav, orig_sr=self.model_sample_rate, target_sr=beatnet.sample_rate
         )
         return beatnet.process(beatnet_input)
 
@@ -104,19 +104,21 @@ class Generate:
             actual_bpm = actual_bpm * 2
 
         # Prepare the main audio loop
-        start_sample = int(start_time * self.sample_rate)
-        end_sample = int(end_time * self.sample_rate)
+        start_sample = int(start_time * self.model_sample_rate)
+        end_sample = int(end_time * self.model_sample_rate)
         loop = wav[start_sample:end_sample]
 
         # Process the audio loop for the main output
-        stretched = pyrb.time_stretch(loop, self.sample_rate, self.bpm / actual_bpm)
+        stretched = pyrb.time_stretch(
+            loop, self.model_sample_rate, self.bpm / actual_bpm
+        )
         return stretched
 
     def write(self, audio, name):
         # Save's as file type given by user
         wav_path = self.save_path + name + ".wav"
         print(wav_path)
-        sf.write(wav_path, audio, self.sample_rate)
+        sf.write(wav_path, audio, self.model_sample_rate)
         if self.output_format == "mp3":
             mp3_path = name + ".mp3"
             subprocess.call(
@@ -207,7 +209,7 @@ class Generate:
         print(f"self.duration: {self.duration}")
         print(f"input_loop_seconds: {input_loop_seconds}")
         print(
-            f"self.sample_rate: {self.sample_rate} self.prompt_sample_rate: {self.prompt_sample_rate}"
+            f"self.model_sample_rate: {self.model_sample_rate} self.prompt_sample_rate: {self.prompt_sample_rate}"
         )
 
         # Slice generated audio from the end of the prompt to the length of the original loop
