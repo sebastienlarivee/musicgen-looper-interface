@@ -230,6 +230,7 @@ class Generate:
         print(f"lead: {lead}")
         # self.write(audio=lead, name="lead")
         num_lead = len(lead)
+        print(f"num_lead: {num_lead}")
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
         wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
 
