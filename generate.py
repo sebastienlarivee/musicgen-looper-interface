@@ -222,10 +222,10 @@ class Generate:
 
         print("GEN COMPLETE!")
 
-        start_sample = 0
+        self.write(audio=wav, name=f"{name}_pre_lead")
         num_lead = 100  # for blending to avoid clicks
-        lead_start = start_sample - num_lead
-        lead = self.audio_prompt[lead_start:start_sample]
+        lead = self.audio_prompt[-num_lead:]
+        self.write(audio=lead, name="lead")
         num_lead = len(lead)
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
         wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
