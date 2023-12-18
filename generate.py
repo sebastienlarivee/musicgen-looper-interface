@@ -197,7 +197,6 @@ class Generate:
         prompt_beats = 4  # placeholder, make it a parameter?
         prompt_seconds = (60 / self.bpm) * prompt_beats
         input_loop_seconds = self.audio_prompt.size(1) / self.prompt_sample_rate
-        # start_indice = int(prompt_duration * self.prompt_sample_rate)
         self.duration = prompt_seconds + input_loop_seconds + 0.1
 
         prompt = self.audio_prompt[
@@ -214,10 +213,10 @@ class Generate:
 
         # Slice generated audio from the end of the prompt to the length of the original loop
         # SOMETHING IS NOT RIGHT HERE
-        start_indice = input_loop_seconds * self.model_sample_rate
-        end_indice = (prompt_seconds + input_loop_seconds) * self.model_sample_rate
+        start_indice = int(input_loop_seconds * self.model_sample_rate)
+        end_indice = int(start_indice + prompt_seconds * self.model_sample_rate)
         print(
-            f"start_indice: {start_indice}, end_indice: {end_indice}, total second: {(end_indice-start_indice)*self.prompt_sample_rate}"
+            f"start_indice: {start_indice}, end_indice: {end_indice}, total samples: {end_indice-start_indice}, total seconds: {(end_indice-start_indice)/self.model_sample_rate}"
         )
 
         wav = self.generate_from_audio(
