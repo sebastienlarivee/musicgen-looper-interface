@@ -35,7 +35,9 @@ class Generate:
         # Variables passed from app.py
         self.bpm = bpm
         self.text_prompt = text_prompt
-        self.audio_prompt, self.prompt_sample_rate = torchaudio.load(audio_prompt)
+        self.audio_prompt, self.prompt_sample_rate = sf.read(
+            audio_prompt
+        )  # torchaudio.load(audio_prompt)
         self.audio_prompt_wav = audio_prompt
         self.output_format = output_format
         self.duration = float(duration)
@@ -201,9 +203,9 @@ class Generate:
         # Select last 4 beats of input audio for use as audio prompt
         prompt_beats = 4  # Placeholder, make it a parameter?
         prompt_seconds = (60 / self.bpm) * prompt_beats
-        prompt = self.audio_prompt[
-            ..., -int(prompt_seconds * self.prompt_sample_rate) :
-        ]
+        prompt = torch.tensor(
+            self.audio_prompt[..., -int(prompt_seconds * self.prompt_sample_rate) :]
+        )
 
         # Calculate total duration (+ a bit of extra) and update generation params
         original_loop_seconds = self.audio_prompt.size(1) / self.prompt_sample_rate
@@ -222,7 +224,7 @@ class Generate:
         )
         print("GEN COMPLETE!")
 
-        # I think my blending setup will have to be different than Jansson's
+        # Blending
         num_lead = 64000
         lead = sf.read(self.audio_prompt_wav, start=-num_lead)
         lead = lead[0]
