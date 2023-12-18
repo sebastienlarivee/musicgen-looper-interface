@@ -206,6 +206,7 @@ class Generate:
         original_loop_seconds = self.audio_prompt.size(1) / self.prompt_sample_rate
         self.duration = prompt_seconds + original_loop_seconds + 0.1
         self.set_generation_params()
+        # Prints to delete
         print(f"self.duration: {self.duration}")
         print(f"original_loop_seconds: {original_loop_seconds}")
         print(
