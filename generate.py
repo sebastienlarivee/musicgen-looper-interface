@@ -1,4 +1,5 @@
 import globals as glo
+import typing as tp
 import os
 import random
 import subprocess
@@ -18,14 +19,14 @@ madmom.audio.filters.np.float = float
 class Generate:
     def __init__(
         self,
-        bpm,
-        text_prompt,
-        audio_prompt,
-        duration,
-        temperature,
-        cfg_coef,
-        output_format,
-        seed,
+        bpm: int,
+        text_prompt: str,
+        audio_prompt: str,
+        duration: float,
+        temperature: int,
+        cfg_coef: float,
+        output_format: str,
+        seed: int,
     ):
         # Global variables:
         self.save_path = glo.SAVE_PATH
@@ -38,7 +39,7 @@ class Generate:
         self.audio_prompt, self.prompt_sample_rate = torchaudio.load(audio_prompt)
         self.audio_prompt_wav = audio_prompt
         self.output_format = output_format
-        self.duration = float(duration)
+        self.duration = duration
         self.temperature = temperature
         self.cfg_coef = cfg_coef
 
