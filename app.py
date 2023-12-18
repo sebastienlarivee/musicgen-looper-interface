@@ -35,7 +35,6 @@ def new_loops_from_text(
     duration: float,
     temperature: int,
     cfg_coef: float,
-    output_format: str,
     seed: int,
 ):
     model_loader(model=model_version, model_path=custom_model_path)
@@ -51,11 +50,10 @@ def new_loops_from_text(
     predict = Generate(
         bpm=bpm,
         text_prompt=text_prompt,
-        audio_prompt=audio_prompt,
+        audio_prompt=None,
         duration=duration,
         temperature=temperature,
         cfg_coef=cfg_coef,
-        output_format=output_format,
         seed=seed,
     )
     predict.set_generation_params()
@@ -88,7 +86,7 @@ with gr.Blocks() as interface:
     with gr.Tab("Generate"):
         with gr.Row():
             with gr.Column():
-                prompt_input_gen = gr.Textbox(
+                text_prompt_gen = gr.Textbox(
                     label="Prompt",
                     placeholder="chill lofi beat, hot summer day, relaxing",
                 )
@@ -193,18 +191,20 @@ with gr.Blocks() as interface:
                 save_path_input = gr.Textbox(
                     value="/content/musicgen-looper-interface", label="Save Path"
                 )
-                output_format_toggle = gr.Radio(
-                    choices=["wav", "mp3"], value="wav", label="Output Format"
-                )
-
     # Action handlers (NEED TO CLEAN THESE UP FOR NEXT RELEASE)
     submit_button_gen.click(
         fn=new_loops_from_text,
         inputs=[
             model_version_toggle,
-            output_format_toggle,
             custom_model_path,
             save_path_input,
+            batch_slider_gen,
+            bpm_slider_gen,
+            text_prompt_gen,
+            duration_slider_gen,
+            temperature_slider_gen,
+            cfg_slider_gen,
+            seed_input_gen,
         ],
         outputs=audio_outputs_gen,
     )
