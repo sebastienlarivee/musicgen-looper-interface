@@ -68,18 +68,13 @@ def inference_call(
     return padded_output
 
 
+##################
 # GRADIO INTERFACE
+##################
 
 
 # Handles the rendering of variable audio outputs
 def variable_outputs(k):
-    k = int(k)
-    return [gr.Audio(type="filepath", visible=True)] * k + [
-        gr.Audio(type="filepath", visible=False)
-    ] * (max_audio_outputs - k)
-
-
-def variable_outputs2(k):
     k = int(k)
     return [gr.Audio(type="filepath", visible=True)] * k + [
         gr.Audio(type="filepath", visible=False)
