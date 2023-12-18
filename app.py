@@ -15,6 +15,15 @@ def get_random_string(length=5):
     return random_str
 
 
+def model_loader(model, model_path):
+    # Load custom model or base release
+    if model == "custom model":
+        # Need to test if download links work for this:
+        glo.load_model(model_path)
+    else:
+        glo.load_model(f"facebook/musicgen-{model}")
+
+
 # Convert this to a class for better reusability (need to see if that's ok with gradio)
 def inference_call(
     bpm,
@@ -28,15 +37,9 @@ def inference_call(
     guidance,
     custom_model_path,
     save_path,
-    audio_prompt="",
+    audio_prompt,
 ):
-    print(f"Audio prompt:{audio_prompt}")
-    # Load custom model or base release
-    if model_version == "custom model":
-        # Need to test if download links work for this:
-        glo.load_model(custom_model_path)
-    else:
-        glo.load_model(f"facebook/musicgen-{model_version}")
+    model_loader(model=model_version, model_path=custom_model_path)
 
     # Make the output folder(s) in the user specified location (make more efficient?)
     glo.create_output_folders(save_path, output_folder_name=output_folder_name)
