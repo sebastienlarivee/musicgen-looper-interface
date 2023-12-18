@@ -25,43 +25,43 @@ def model_loader(model, model_path):
 
 
 # Convert this to a class for better reusability (need to see if that's ok with gradio)
-def new_loop_from_text(
-    bpm,
-    seed,
-    prompt,
-    variations,
-    temperature,
-    max_duration,
-    model_version,
-    output_format,
-    guidance,
-    custom_model_path,
-    save_path,
-    audio_prompt,
+def new_loops(
+    model_version: str,
+    custom_model_path: str,
+    save_path: str,
+    batch_size: int,
+    bpm: int,
+    text_prompt: str,
+    audio_prompt: str,
+    duration: float,
+    temperature: int,
+    cfg_coef: float,
+    output_format: str,
+    seed: int,
 ):
     model_loader(model=model_version, model_path=custom_model_path)
 
     # Make the output folder(s) in the user specified location (make more efficient?)
     glo.create_output_folders(save_path, output_folder_name=output_folder_name)
 
-    prompt = prompt + f", {bpm} bpm"
+    text_prompt = text_prompt + f", {bpm} bpm"
     output = []
     random_string = get_random_string()
 
     # Pass parameters from the gradio interface to the generation code
     predict = Generate(
         bpm=bpm,
-        text_prompt=prompt,
+        text_prompt=text_prompt,
         audio_prompt=audio_prompt,
-        duration=max_duration,
+        duration=duration,
         temperature=temperature,
-        cfg_coef=guidance,
+        cfg_coef=cfg_coef,
         output_format=output_format,
         seed=seed,
     )
     predict.set_generation_params()
 
-    for i in range(variations):
+    for i in range(batch_size):
         name = f"{random_string}_variation_{i+1:02d}"
         output.append(predict.loop_generate_from_audio(name=name))
 
@@ -130,7 +130,7 @@ with gr.Blocks() as interface:
     with gr.Tab("Generate continuations"):
         with gr.Row():
             with gr.Column():
-                audio_input = gr.Audio(type="filepath")
+                audio_input = gr.Audio(type="filepath", value=None)
                 prompt_input2 = gr.Textbox(
                     label="Prompt",
                     placeholder="chill lofi beat, hot summer day, relaxing",
@@ -200,7 +200,7 @@ with gr.Blocks() as interface:
 
     # Action handlers (NEED TO CLEAN THESE UP FOR NEXT RELEASE)
     submit_button.click(
-        fn=inference_call,
+        fn=new_loops,
         inputs=[
             bpm_slider,
             seed_input,
