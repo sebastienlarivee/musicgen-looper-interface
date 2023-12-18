@@ -36,8 +36,11 @@ class Generate:
         # Variables passed from app.py
         self.bpm = bpm
         self.text_prompt = text_prompt
-        self.audio_prompt, self.prompt_sample_rate = torchaudio.load(audio_prompt)
-        self.audio_prompt_wav = audio_prompt
+
+        if audio_prompt is not None:
+            self.audio_prompt, self.prompt_sample_rate = torchaudio.load(audio_prompt)
+            self.audio_prompt_wav = audio_prompt
+
         self.output_format = output_format
         self.duration = duration
         self.temperature = temperature
