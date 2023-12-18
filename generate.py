@@ -227,6 +227,7 @@ class Generate:
 
         num_lead = 100  # for blending to avoid clicks
         lead = self.audio_prompt[:num_lead]
+        print(f"lead: {lead}")
         # self.write(audio=lead, name="lead")
         num_lead = len(lead)
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
