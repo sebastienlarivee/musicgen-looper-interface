@@ -226,9 +226,9 @@ class Generate:
         # I think my blending setup will have to be different than Jansson's
         self.write(audio=wav, name=f"{name}_pre_lead")
         num_lead = 100
-        lead = sf.read(self.audio_prompt_wav, start=0, stop=num_lead)
+        lead = sf.read(self.audio_prompt_wav, frames=num_lead)
         print(f"lead: {lead}")
-        self.write(audio=lead, name="lead")
+        # self.write(audio=lead, name="lead")
         num_lead = len(lead)
         print(f"num_lead: {num_lead}")
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
