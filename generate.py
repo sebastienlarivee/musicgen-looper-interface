@@ -206,6 +206,9 @@ class Generate:
         self.set_generation_params()
         print(f"self.duration: {self.duration}")
         print(f"input_loop_seconds: {input_loop_seconds}")
+        print(
+            f"self.sample_rate: {self.sample_rate} self.prompt_sample_rate: {self.prompt_sample_rate}"
+        )
 
         # Slice generated audio from the end of the prompt to the length of the original loop
         # SOMETHING IS NOT RIGHT HERE
