@@ -226,7 +226,7 @@ class Generate:
         self.write(audio=wav, name=f"{name}_pre_lead")
 
         num_lead = 100  # for blending to avoid clicks
-        lead = self.audio_prompt[:num_lead]
+        lead = self.audio_prompt.size(1)[:num_lead]
         print(f"lead: {lead}")
         # self.write(audio=lead, name="lead")
         num_lead = len(lead)
