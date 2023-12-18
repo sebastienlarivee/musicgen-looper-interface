@@ -229,7 +229,7 @@ class Generate:
         self.audio_prompt = self.audio_prompt / np.abs(self.audio_prompt).max()
         lead = self.audio_prompt[:num_lead]
         print(f"lead: {lead}")
-        # self.write(audio=lead, name="lead")
+        self.write(audio=lead, name="lead")
         num_lead = len(lead)
         print(f"num_lead: {num_lead}")
         wav[-num_lead:] *= np.linspace(1, 0, num_lead)
