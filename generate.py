@@ -220,7 +220,7 @@ class Generate:
             start_indice=start_indice,
             end_indice=end_indice,
         )
-        print(f"wav:" {wav})
+        print(f"wav: {wav}")
         print("GEN COMPLETE!")
 
         # I think my blending setup will have to be different than Jansson's
