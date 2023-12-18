@@ -25,14 +25,13 @@ def model_loader(model, model_path):
 
 
 # Convert this to a class for better reusability (need to see if that's ok with gradio)
-def new_loops(
+def new_loops_from_text(
     model_version: str,
     custom_model_path: str,
     save_path: str,
     batch_size: int,
     bpm: int,
     text_prompt: str,
-    audio_prompt: str,
     duration: float,
     temperature: int,
     cfg_coef: float,
@@ -89,19 +88,19 @@ with gr.Blocks() as interface:
     with gr.Tab("Generate"):
         with gr.Row():
             with gr.Column():
-                prompt_input = gr.Textbox(
+                prompt_input_gen = gr.Textbox(
                     label="Prompt",
                     placeholder="chill lofi beat, hot summer day, relaxing",
                 )
 
                 with gr.Row():
-                    bpm_slider = gr.Slider(
+                    bpm_slider_gen = gr.Slider(
                         minimum=50, maximum=250, value=100, label="BPM"
                     )
-                    max_duration_slider = gr.Slider(
+                    duration_slider_gen = gr.Slider(
                         minimum=5, maximum=30, value=10, step=1, label="Max Duration"
                     )
-                    variations_slider = gr.Slider(
+                    batch_slider_gen = gr.Slider(
                         minimum=1,
                         maximum=max_audio_outputs,
                         value=1,
@@ -110,27 +109,27 @@ with gr.Blocks() as interface:
                     )
 
                 with gr.Row():
-                    seed_input = gr.Textbox(value=-1, label="Seed")
-                    temperature_slider = gr.Slider(
+                    seed_input_gen = gr.Textbox(value=-1, label="Seed")
+                    temperature_slider_gen = gr.Slider(
                         minimum=0, maximum=1, value=1, label="Temperature"
                     )
-                    guidance_slider = gr.Slider(
+                    cfg_slider_gen = gr.Slider(
                         minimum=0, maximum=15, value=3, label="CFG Scale"
                     )
 
-                submit_button = gr.Button("Submit")
+                submit_button_gen = gr.Button("Submit")
             with gr.Column():
-                audio_outputs = []
+                audio_outputs_gen = []
                 for i in range(max_audio_outputs):
                     a = gr.Audio(type="filepath")
-                    audio_outputs.append(a)
-        variations_slider.change(variable_outputs, variations_slider, audio_outputs)
+                    audio_outputs_gen.append(a)
+        batch_slider_gen.change(variable_outputs, batch_slider_gen, audio_outputs_gen)
 
     # Generate continuations from audio tab
-    with gr.Tab("Generate continuations"):
+    with gr.Tab("Continuations"):
         with gr.Row():
             with gr.Column():
-                audio_input = gr.Audio(type="filepath", value=None)
+                audio_input = gr.Audio(type="filepath")
                 prompt_input2 = gr.Textbox(
                     label="Prompt",
                     placeholder="chill lofi beat, hot summer day, relaxing",
@@ -199,22 +198,15 @@ with gr.Blocks() as interface:
                 )
 
     # Action handlers (NEED TO CLEAN THESE UP FOR NEXT RELEASE)
-    submit_button.click(
-        fn=new_loops,
+    submit_button_gen.click(
+        fn=new_loops_from_text,
         inputs=[
-            bpm_slider,
-            seed_input,
-            prompt_input,
-            variations_slider,
-            temperature_slider,
-            max_duration_slider,
             model_version_toggle,
             output_format_toggle,
-            guidance_slider,
             custom_model_path,
             save_path_input,
         ],
-        outputs=audio_outputs,
+        outputs=audio_outputs_gen,
     )
 
     submit_button2.click(
