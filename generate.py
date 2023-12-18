@@ -220,6 +220,7 @@ class Generate:
             start_indice=start_indice,
             end_indice=end_indice,
         )
+
         print("GEN COMPLETE!")
 
         # Blending
@@ -231,5 +232,5 @@ class Generate:
         wav[-num_lead:] += np.linspace(0, 1, num_lead) * lead
 
         output_path = self.write(audio=wav, name=name)
-        self.seed += 1
+        self.seed += 1  # For batch generation
         return output_path
