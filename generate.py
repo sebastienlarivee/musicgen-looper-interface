@@ -36,6 +36,7 @@ class Generate:
         self.bpm = bpm
         self.text_prompt = text_prompt
         self.audio_prompt, self.prompt_sample_rate = torchaudio.load(audio_prompt)
+        self.audio_prompt_wav = audio_prompt
         self.output_format = output_format
         self.duration = float(duration)
         self.temperature = temperature
@@ -225,9 +226,11 @@ class Generate:
         # I think my blending setup will have to be different than Jansson's
         self.write(audio=wav, name=f"{name}_pre_lead")
         print(f"self.audio_prompt: {self.audio_prompt}")
-        num_lead = 32000  # for blending to avoid clicks
-        self.audio_prompt = self.audio_prompt / np.abs(self.audio_prompt).max()
-        lead = self.audio_prompt[:num_lead]
+        num_lead = 100  # for blending to avoid clicks
+        self.audio_prompt_wav = (
+            self.audio_prompt_wav / np.abs(self.audio_prompt_wav).max()
+        )
+        lead = self.audio_prompt_wav[:num_lead]
         print(f"lead: {lead}")
         self.write(audio=lead, name="lead")
         num_lead = len(lead)
