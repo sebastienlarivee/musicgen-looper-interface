@@ -225,7 +225,7 @@ class Generate:
         # I think my blending setup will have to be different than Jansson's
         self.write(audio=wav, name=f"{name}_pre_lead")
         print(f"self.audio_prompt: {self.audio_prompt}")
-        num_lead = 100  # for blending to avoid clicks
+        num_lead = 32000  # for blending to avoid clicks
         self.audio_prompt = self.audio_prompt / np.abs(self.audio_prompt).max()
         lead = self.audio_prompt[:num_lead]
         print(f"lead: {lead}")
