@@ -218,7 +218,7 @@ class Generate:
         )
 
         # Blending (I feel like this can be improved)
-        num_lead = 500
+        num_lead = 100
         lead = sf.read(self.audio_prompt_wav, start=-num_lead)
         lead = lead[0]
         num_lead = len(lead)
