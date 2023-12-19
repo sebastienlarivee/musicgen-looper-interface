@@ -191,14 +191,12 @@ class Generate:
 
         original_loop_seconds = self.audio_prompt.size(1) / self.prompt_sample_rate
 
+        # Might as well give full context if we can?
         if original_loop_seconds * 2 <= 29.5:
-            # Might as well give full context if we can?
-            prompt = self.audio_prompt
             prompt_seconds = original_loop_seconds
+            prompt = self.audio_prompt
         else:
-            # Select last X beats of input audio for use as audio prompt
-            prompt_beats = 8  # Placeholder, make it a parameter?
-            prompt_seconds = (60 / self.bpm) * prompt_beats
+            prompt_seconds = 29.5 - original_loop_seconds
             prompt = self.audio_prompt[
                 ..., -int(prompt_seconds * self.prompt_sample_rate) :
             ]
@@ -208,6 +206,7 @@ class Generate:
         self.set_generation_params()
 
         # Slice generated audio from the end of the prompt to the length of the original loop
+        # This needs to be calculated with model_sample_rate
         start_indice = int(prompt_seconds * self.model_sample_rate)
         end_indice = int(start_indice + original_loop_seconds * self.model_sample_rate)
 
