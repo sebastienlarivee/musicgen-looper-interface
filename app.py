@@ -193,7 +193,7 @@ with gr.Blocks() as interface:
                 with gr.Row():
                     seed_input_con = gr.Textbox(value=-1, label="Seed")
                     temperature_slider_con = gr.Slider(
-                        minimum=0, maximum=1, value=1, label="Temperature"
+                        minimum=0, maximum=1, value=0.95, label="Temperature"
                     )
                     cfg_slider_con = gr.Slider(
                         minimum=0, maximum=15, step=0.5, value=3, label="CFG Scale"
