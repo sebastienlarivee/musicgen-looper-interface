@@ -265,7 +265,7 @@ with gr.Blocks() as interface:
             cfg_slider_con,
             seed_input_con,
         ],
-        outputs=audio_outputs_gen,
+        outputs=audio_outputs_con,
     )
 
 
