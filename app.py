@@ -67,6 +67,49 @@ def new_loops_from_text(
     return padded_output
 
 
+def new_loops_from_audio(
+    model_version: str,
+    custom_model_path: str,
+    save_path: str,
+    batch_size: int,
+    bpm: int,
+    text_prompt: str,
+    audio_prompt: str,
+    duration: float,
+    temperature: int,
+    cfg_coef: float,
+    seed: int,
+):
+    model_loader(model=model_version, model_path=custom_model_path)
+
+    # Make the output folder(s) in the user specified location (make more efficient?)
+    glo.create_output_folders(save_path, output_folder_name=output_folder_name)
+
+    text_prompt = text_prompt + f", {bpm} bpm"
+    output = []
+    random_string = get_random_string()
+
+    # Pass parameters from the gradio interface to the generation code
+    predict = Generate(
+        bpm=bpm,
+        text_prompt=text_prompt,
+        audio_prompt=audio_prompt,
+        duration=float(duration),
+        temperature=temperature,
+        cfg_coef=cfg_coef,
+        seed=int(seed),
+    )
+
+    for i in range(batch_size):
+        name = f"{random_string}_continuation_{i+1:02d}"
+        output.append(predict.loop_generate_from_text(name=name))
+
+    # Pad with empty outputs so the returned number of outputs == max_audio_outputs
+    padded_output = output + [None] * (max_audio_outputs - len(output))
+
+    return padded_output
+
+
 ##################
 # GRADIO INTERFACE
 ##################
@@ -95,7 +138,7 @@ with gr.Blocks() as interface:
                         minimum=50, maximum=250, value=100, label="BPM"
                     )
                     duration_slider_gen = gr.Slider(
-                        minimum=5, maximum=30, value=10, step=1, label="Max Duration"
+                        minimum=5, maximum=30, value=10, step=0.5, label="Max Duration"
                     )
                     batch_slider_gen = gr.Slider(
                         minimum=1,
@@ -111,7 +154,7 @@ with gr.Blocks() as interface:
                         minimum=0, maximum=1, value=1, label="Temperature"
                     )
                     cfg_slider_gen = gr.Slider(
-                        minimum=0, maximum=15, value=3, label="CFG Scale"
+                        minimum=0, maximum=15, step=0.5, value=3, label="CFG Scale"
                     )
                 submit_button_gen = gr.Button("Submit")
 
@@ -126,20 +169,20 @@ with gr.Blocks() as interface:
     with gr.Tab("Continuations"):
         with gr.Row():
             with gr.Column():
-                audio_input = gr.Audio(type="filepath")
-                prompt_input2 = gr.Textbox(
+                audio_prompt_con = gr.Audio(type="filepath")
+                text_prompt_con = gr.Textbox(
                     label="Prompt",
                     placeholder="chill lofi beat, hot summer day, relaxing",
                 )
 
                 with gr.Row():
-                    bpm_slider2 = gr.Slider(
+                    bpm_slider_con = gr.Slider(
                         minimum=50, maximum=250, value=100, label="BPM"
                     )
-                    max_duration_slider2 = gr.Slider(
-                        minimum=5, maximum=30, value=10, step=1, label="Max Duration"
+                    duration_slider_con = gr.Slider(
+                        minimum=5, maximum=30, value=10, step=0.5, label="Max Duration"
                     )
-                    variations_slider2 = gr.Slider(
+                    batch_slider_con = gr.Slider(
                         minimum=1,
                         maximum=max_audio_outputs,
                         value=1,
@@ -148,21 +191,21 @@ with gr.Blocks() as interface:
                     )
 
                 with gr.Row():
-                    seed_input2 = gr.Textbox(value=-1, label="Seed")
-                    temperature_slider2 = gr.Slider(
+                    seed_input_con = gr.Textbox(value=-1, label="Seed")
+                    temperature_slider_con = gr.Slider(
                         minimum=0, maximum=1, value=1, label="Temperature"
                     )
-                    guidance_slider2 = gr.Slider(
-                        minimum=0, maximum=15, value=3, label="CFG Scale"
+                    cfg_slider_con = gr.Slider(
+                        minimum=0, maximum=15, step=0.5, value=3, label="CFG Scale"
                     )
 
-                submit_button2 = gr.Button("Submit")
+                submit_button_con = gr.Button("Submit")
             with gr.Column():
-                audio_outputs2 = []
+                audio_outputs_con = []
                 for i in range(max_audio_outputs):
                     a = gr.Audio(type="filepath")
-                    audio_outputs2.append(a)
-        variations_slider2.change(variable_outputs, variations_slider2, audio_outputs2)
+                    audio_outputs_con.append(a)
+        batch_slider_con.change(variable_outputs, batch_slider_con, audio_outputs_con)
 
     # Settings tab
     with gr.Tab("Settings"):
@@ -204,6 +247,23 @@ with gr.Blocks() as interface:
             temperature_slider_gen,
             cfg_slider_gen,
             seed_input_gen,
+        ],
+        outputs=audio_outputs_gen,
+    )
+    submit_button_con.click(
+        fn=new_loops_from_audio,
+        inputs=[
+            model_toggle_set,
+            model_path_set,
+            save_path_set,
+            batch_slider_con,
+            bpm_slider_con,
+            text_prompt_con,
+            audio_prompt_con,
+            duration_slider_con,
+            temperature_slider_con,
+            cfg_slider_con,
+            seed_input_con,
         ],
         outputs=audio_outputs_gen,
     )
