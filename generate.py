@@ -192,11 +192,11 @@ class Generate:
         original_loop_seconds = self.audio_prompt.size(1) / self.prompt_sample_rate
 
         # Might as well give full context if we can?
-        if original_loop_seconds * 2 <= 29.5:
+        if original_loop_seconds * 2 <= 29.8:
             prompt_seconds = original_loop_seconds
             prompt = self.audio_prompt
         else:
-            prompt_seconds = 29.5 - original_loop_seconds
+            prompt_seconds = 29.8 - original_loop_seconds
             prompt = self.audio_prompt[
                 ..., -int(prompt_seconds * self.prompt_sample_rate) :
             ]
