@@ -85,7 +85,7 @@ def new_loops_from_audio(
     # Make the output folder(s) in the user specified location (make more efficient?)
     glo.create_output_folders(save_path, output_folder_name=output_folder_name)
 
-    text_prompt = text_prompt + f", {bpm} bpm"
+    text_prompt = text_prompt  # + f", {bpm} bpm"
     output = []
     random_string = get_random_string()
 
