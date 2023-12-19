@@ -113,8 +113,8 @@ with gr.Blocks() as interface:
                     cfg_slider_gen = gr.Slider(
                         minimum=0, maximum=15, value=3, label="CFG Scale"
                     )
-
                 submit_button_gen = gr.Button("Submit")
+
             with gr.Column():
                 audio_outputs_gen = []
                 for i in range(max_audio_outputs):
