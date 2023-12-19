@@ -125,7 +125,7 @@ def variable_outputs(k):
 
 with gr.Blocks() as interface:
     # Generate from text tab
-    with gr.Tab("Generate"):
+    with gr.Tab("Text to loop"):
         with gr.Row():
             with gr.Column():
                 text_prompt_gen = gr.Textbox(
@@ -166,7 +166,7 @@ with gr.Blocks() as interface:
         batch_slider_gen.change(variable_outputs, batch_slider_gen, audio_outputs_gen)
 
     # Generate continuations from audio tab
-    with gr.Tab("Continuations"):
+    with gr.Tab("Loop to loop"):
         with gr.Row():
             with gr.Column():
                 audio_prompt_con = gr.Audio(type="filepath")
