@@ -102,7 +102,7 @@ def new_loops_from_audio(
 
     for i in range(batch_size):
         name = f"{random_string}_continuation_{i+1:02d}"
-        output.append(predict.loop_generate_from_text(name=name))
+        output.append(predict.loop_generate_from_audio(name=name))
 
     # Pad with empty outputs so the returned number of outputs == max_audio_outputs
     padded_output = output + [None] * (max_audio_outputs - len(output))
