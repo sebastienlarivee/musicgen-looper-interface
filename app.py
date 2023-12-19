@@ -50,10 +50,10 @@ def new_loops_from_text(
         bpm=bpm,
         text_prompt=text_prompt,
         audio_prompt=None,
-        duration=duration,
+        duration=float(duration),
         temperature=temperature,
         cfg_coef=cfg_coef,
-        seed=seed,
+        seed=int(seed),
     )
     predict.set_generation_params()
 
