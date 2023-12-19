@@ -190,7 +190,7 @@ class Generate:
         print(f"Text to audio, seed: {self.seed}")
 
         # Select last 4 beats of input audio for use as audio prompt
-        prompt_beats = 4  # Placeholder, make it a parameter?
+        prompt_beats = 8  # Placeholder, make it a parameter?
         prompt_seconds = (60 / self.bpm) * prompt_beats
         prompt = self.audio_prompt[
             ..., -int(prompt_seconds * self.prompt_sample_rate) :
