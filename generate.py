@@ -1,8 +1,6 @@
 import globals as glo
-import typing as tp
 import os
 import random
-import subprocess
 import torch
 import torchaudio
 import numpy as np
@@ -25,7 +23,6 @@ class Generate:
         duration: float,
         temperature: int,
         cfg_coef: float,
-        output_format: str,
         seed: int,
     ):
         # Global variables:
@@ -41,7 +38,6 @@ class Generate:
             self.audio_prompt, self.prompt_sample_rate = torchaudio.load(audio_prompt)
             self.audio_prompt_wav = audio_prompt
 
-        self.output_format = output_format
         self.duration = duration
         self.temperature = temperature
         self.cfg_coef = cfg_coef
@@ -124,16 +120,7 @@ class Generate:
         wav_path = self.save_path + name + ".wav"
         print(wav_path)
         sf.write(wav_path, audio, self.model_sample_rate)
-        if self.output_format == "mp3":
-            mp3_path = name + ".mp3"
-            subprocess.call(
-                ["ffmpeg", "-loglevel", "error", "-y", "-i", wav_path, mp3_path]
-            )
-            os.remove(wav_path)
-            path = mp3_path
-        else:
-            path = wav_path
-        return path
+        return wav_path
 
     def generate_from_text(self):
         # Generates audio from a text prompt
