@@ -221,7 +221,7 @@ with gr.Blocks() as interface:
                         "stereo-large",
                         "custom model",
                     ],
-                    value="stereo-small",
+                    value="stereo-medium",
                     label="Model Version",
                 )
                 model_path_set = gr.Textbox(
