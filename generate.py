@@ -189,15 +189,21 @@ class Generate:
         # ENDPOINT: Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
         print(f"Audio to loop, seed: {self.seed}")
 
-        # Select last 4 beats of input audio for use as audio prompt
-        prompt_beats = 8  # Placeholder, make it a parameter?
-        prompt_seconds = (60 / self.bpm) * prompt_beats
-        prompt = self.audio_prompt[
-            ..., -int(prompt_seconds * self.prompt_sample_rate) :
-        ]
-
-        # Calculate total duration (+ a bit of extra) and update generation params
         original_loop_seconds = self.audio_prompt.size(1) / self.prompt_sample_rate
+
+        if original_loop_seconds * 2 <= 29.5:
+            # Might as well give full context if we can?
+            prompt = self.audio_prompt
+            prompt_seconds = original_loop_seconds
+        else:
+            # Select last X beats of input audio for use as audio prompt
+            prompt_beats = 8  # Placeholder, make it a parameter?
+            prompt_seconds = (60 / self.bpm) * prompt_beats
+            prompt = self.audio_prompt[
+                ..., -int(prompt_seconds * self.prompt_sample_rate) :
+            ]
+
+        # Set total duration (+ a bit of extra) and update generation params
         self.duration = prompt_seconds + original_loop_seconds + 0.1
         self.set_generation_params()
 
