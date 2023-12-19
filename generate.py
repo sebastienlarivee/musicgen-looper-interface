@@ -126,8 +126,6 @@ class Generate:
         # Generates audio from a text prompt
         self.set_all_seeds()
 
-        print(f"Generating -> prompt: {self.text_prompt}, seed: {self.seed}")
-
         generation = (
             self.model.generate([self.text_prompt], progress=True).cpu().numpy()[0, 0]
         )
@@ -179,6 +177,7 @@ class Generate:
 
     def loop_generate_from_text(self, name):
         # ENDPOINT: Generate seamless loops from a text prompt
+        print(f"Text to audio, seed: {self.seed}")
         wav = self.generate_from_text()
         beats = self.estimate_beats(wav=wav)
         loop = self.get_loop_points(beats=beats, wav=wav)
@@ -188,6 +187,7 @@ class Generate:
 
     def loop_generate_from_audio(self, name):
         # ENDPOINT: Generate seamless loops from an audio prompt (prompt must also be a loop to work well)
+        print(f"Text to audio, seed: {self.seed}")
 
         # Select last 4 beats of input audio for use as audio prompt
         prompt_beats = 4  # Placeholder, make it a parameter?
