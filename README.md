@@ -1,10 +1,10 @@
 # MusicGen Looper Interface
-Gradio implementation of [Cog MusicGen Looper](https://github.com/andreasjansson/cog-musicgen-looper) by Andreas Jansson. Uses MusicGen to generate music samples then trims them into seamless loops, and can generate multiple self-consistent variations based on the first audio generated.
+Gradio implementation of [Cog MusicGen Looper](https://github.com/andreasjansson/cog-musicgen-looper) by Andreas Jansson. Uses MusicGen to generate music samples then trims them into seamless loops, and can generate multiple self-consistent variations using audio to loop.
 
 # Run on Colab
 A simple colab notebook can be found [here](https://colab.research.google.com/drive/1cGaPjpETt0eBr1RPXhu3SvWoh1AaZN-I?usp=sharing) and should provide everything you need get started with the interface.
 
-![alt text](https://github.com/sebastienlarivee/musicgen-looper-interface/blob/main/interface%20screenshot.png)
+![alt text](https://github.com/sebastienlarivee/musicgen-looper-interface/blob/main/interface_screenshot.png)
 
 # Licenses
 * All code in this repository is licensed under the Apache License 2.0 license.

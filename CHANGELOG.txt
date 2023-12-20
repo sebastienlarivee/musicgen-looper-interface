@@ -1,0 +1,23 @@
+Version 0.2.0 (December 20 2023):
+Complete code rewrite:
+- All the inference code is now in 'generate.py'.
+- 4 main inference functions (only 2 are implemented in Gradio in this release).
+- Gradio interface now has two different "endpoints" for text to loop and audio to loop.
+- New file 'globals.py' which handles model loading and save path operations.
+- Code is generally much cleaner and readable (I hope!) and should speed up future development.
+
+Interface update:
+- Tabs for text to loop and audio to loop.
+- Removed output file type option from 'settings', now defaults to .wav
+
+Other changes/notes:
+- Renamed 'requirements.txt' to 'requirements_colab.txt' as that's more accurate.
+- Added 'CHANGELOG.txt'
+- I currently don't know the full install requirements for this project as I can't run it locally.
+
+Version 0.1.1 (December 14 2023):
+I made some small changes to the initial release. I don't remeber what they were but I'll mention it in this doc for completeness.
+
+Version 0.1.0 (December 13 2023):
+Initial release.
+Simple reproduction of Andreas Jansson's Cog MusicGen Looper
